@@ -1,4 +1,11 @@
 <script>
+  function addControlsToPage2(oPage) {
+    let oControl = new sap.m.Label({
+                                  text  : "Label1 on Page2"
+                              });
+    oPage.addContent(oControl);     
+  }
+
   function navigateToPage1() {
     window.app.back();
   }

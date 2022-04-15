@@ -1,4 +1,18 @@
 <script>
+  function addControlsToPage1(oPage) {
+    // console.log("addtoPage called");
+    let oControl = new sap.m.Button({
+                                      text  : "Go to Page 2",
+                                      press : navigateToPage2
+                                    })
+    oPage.addContent(oControl);
+
+    oControl = new sap.m.Label({
+                                  text  : "Label1"
+                              });
+    oPage.addContent(oControl); 
+  }
+  
   function navigateToPage2() {
     window.app.to("page2");
   }

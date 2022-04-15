@@ -10,47 +10,14 @@
           data-sap-ui-theme = "sap_bluecrystal"
           data-sap-ui-libs  = "sap.m" >
 	</script>
-	<script type="text/javascript">
-		sap.ui.getCore().attachInit(function () {
-			// create a mobile app and display page1 initially
-			window.app = new sap.m.App("myApp", {
-				initialPage: "page1"
-			});
-			
-      // create the first page
-			var page1 = new sap.m.Page("page1", {
-                    title         : "Hello World",
-                    showNavButton : false,
-                    content : [ new sap.m.Button({
-                                  text  : "Go to Page 2",
-                                  press : navigateToPage2
-                                }),
-                                new sap.m.Label({
-                                  text  : "Label1"
-                                })                    
-                              ]
-                  });
-			
-      // create the second page with a back button
-			var page2 = new sap.m.Page("page2", {
-                    title          : "Hello Page 2",
-                    showNavButton  : true,
-                    navButtonPress : navigateToPage1
-                  });
-			
-      // add both pages to the app
-			app.addPage(page1).addPage(page2);
-			
-      // place the app into the HTML document
-			app.placeAt("content");
-		});
-	</script>
 </head>
 <body>
-  <?!= include('page1_controller'); ?>
-  <?!= include('page2_controller'); ?>
-  
   <div class="sapUiBody" id="content">
   </div>
+
+  <?!= include('page1_controller'); ?>
+  <?!= include('page2_controller'); ?>
+  <?!= include('main'); ?>
+
 </body>
 </html>
