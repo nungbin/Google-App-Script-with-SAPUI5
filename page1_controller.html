@@ -1,14 +1,30 @@
 <script>
+  // Dynamic loading of SimpleForm
+  // https://stackoverflow.com/questions/39492421/uncaught-typeerror-sap-ui-layout-form-simpleform-is-not-a-constructor
+  $.sap.require("sap.ui.layout.form.SimpleForm");
+
   function addControlsToPage1(oPage) {
     // Enable console logging
     // console.log("addtoPage called");
 
-    // Dynamic loading
-    // https://stackoverflow.com/questions/39492421/uncaught-typeerror-sap-ui-layout-form-simpleform-is-not-a-constructor
-    $.sap.require("sap.ui.layout.form.SimpleForm");
+    let oLabelName = new sap.m.Label({
+      text:  "Supplier name"
+    })
+    let oTextName = new sap.m.Text({
+      text:  ""
+    })
+
     let oSimpleform1 = new sap.ui.layout.form.SimpleForm({
-      title:"Elements with Simple Form Layout"
+      title:   "Elements with Simple Form Layout",
+      editable: true,
+      layout:   "ResponsiveGridLayout",
+      content: [
+                oLabelName,
+                oTextName
+      ]
     }); 
+
+
 
     let oButton1 = new sap.m.Button({
                                       text  : "Go to Page 2",
@@ -16,14 +32,8 @@
                                     })
     // oPage.addContent(oControl);
 
-    let oLabel1 = new sap.m.Label({
-                                  text  : "Label1 in VBox"
-                              });
-    // oPage.addContent(oControl); 
-
     let oVbox = new sap.m.VBox({
       items: [ oButton1,
-               oLabel1,
                oSimpleform1  
              ]
     });
