@@ -1,16 +1,33 @@
 <script>
   function addControlsToPage1(oPage) {
+    // Enable console logging
     // console.log("addtoPage called");
-    let oControl = new sap.m.Button({
+
+    // Dynamic loading
+    // https://stackoverflow.com/questions/39492421/uncaught-typeerror-sap-ui-layout-form-simpleform-is-not-a-constructor
+    $.sap.require("sap.ui.layout.form.SimpleForm");
+    let oSimpleform1 = new sap.ui.layout.form.SimpleForm({
+      title:"Elements with Simple Form Layout"
+    }); 
+
+    let oButton1 = new sap.m.Button({
                                       text  : "Go to Page 2",
                                       press : navigateToPage2
                                     })
-    oPage.addContent(oControl);
+    // oPage.addContent(oControl);
 
-    oControl = new sap.m.Label({
-                                  text  : "Label1"
+    let oLabel1 = new sap.m.Label({
+                                  text  : "Label1 in VBox"
                               });
-    oPage.addContent(oControl); 
+    // oPage.addContent(oControl); 
+
+    let oVbox = new sap.m.VBox({
+      items: [ oButton1,
+               oLabel1,
+               oSimpleform1  
+             ]
+    });
+    oPage.addContent(oVbox)
   }
   
   function navigateToPage2() {
