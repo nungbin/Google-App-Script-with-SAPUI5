@@ -9,7 +9,7 @@
   <!-- 
     https://help.sap.com/saphelp_snc700_ehp04/helpdata/en/a0/4b0d10fb494d1cb722b9e341b584ba/frameset.htm
   -->
-	<script src  = "https://openui5nightly.hana.ondemand.com/resources/sap-ui-core.js" 
+	<!-- <script src  = "https://openui5nightly.hana.ondemand.com/resources/sap-ui-core.js" 
           type = "text/javascript"
           id   = "sap-ui-bootstrap"
           data-sap-ui-theme = "sap_fiori_3"
@@ -17,9 +17,16 @@
           data-sap-ui-compatVersion="edge"
           data-sap-ui-async="true"
   >
-	</script>
+	</script> -->
 </head>
 <body>
+  <?!= include('main_css'); ?>
+  <div id="load_screen"><div id="loading">Loading document... This could take up to 1-2 mins to finish.</div></div>
+  
+  <!-- Start loading Open UI5 framework -->
+  <?!= include('load_sapui5_framework'); ?>
+
+  <!-- Your normal document content lives here -->
   <div class="sapUiBody sapUiSizeCompact" id="content">
   </div>
 

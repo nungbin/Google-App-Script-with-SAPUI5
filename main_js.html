@@ -1,5 +1,6 @@
 	<script type="text/javascript">
     $.sap.require("sap.ui.core.mvc.XMLView");  // Dynamic loading of XMLView
+    $.sap.require("sap.ui.model.json.JSONModel");  // Dynamic loading of JSON Model
 
 		sap.ui.getCore().attachInit(function () {
       let sViewContent = [];
@@ -57,5 +58,13 @@
     function mainLogic(oView) {
       window.rootView = oView;
       oView.placeAt("content");
+
+      removeLoadingScreen();
+
+      let oModel = new sap.ui.model.json.JSONModel();
+      oModel.setData(initData());
+      console.log(oModel);
+      oView.setModel(oModel);
+      //sap.ui.getCore().setModel(oModel);
     }
 </script>
