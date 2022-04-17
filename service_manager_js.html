@@ -1,0 +1,9 @@
+<script>
+  function getViewContent(oViewID) {
+    return new Promise (function (resolve,reject) {
+      google.script.run.withSuccessHandler(function(oFileContent) {
+        resolve(oFileContent);
+      }).fileRead(oViewID);
+    })
+  }
+</script>

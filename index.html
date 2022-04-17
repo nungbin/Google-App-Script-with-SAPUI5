@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <base target="_self">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta charset="UTF-8">
 	<title>Hello World App</title>
@@ -22,9 +23,13 @@
   <div class="sapUiBody sapUiSizeCompact" id="content">
   </div>
 
-  <?!= include('page1_controller'); ?>
-  <?!= include('page2_controller'); ?>
-  <?!= include('main'); ?>
+  <?!= include('service_manager_js'); ?>
+  <?!= include('RootView_controller_js'); ?>
+  <!-- 
+    <?!= include('page1_controller_js'); ?>
+    <?!= include('page2_controller_js'); ?> 
+  -->
+  <?!= include('main_js'); ?>
 
 </body>
 </html>
