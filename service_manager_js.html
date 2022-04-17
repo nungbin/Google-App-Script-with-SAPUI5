@@ -10,6 +10,8 @@
   
   function getViewContent(oViewID) {
     return new Promise (function (resolve,reject) {
+      // google.script.run: interact with server side scripts
+
       google.script.run.withSuccessHandler(function(oFileContent) {
         resolve(oFileContent);
       }).fileRead(oViewID);

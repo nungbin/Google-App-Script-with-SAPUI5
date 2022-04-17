@@ -4,7 +4,7 @@
   <base target="_self">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta charset="UTF-8">
-	<title>Hello World App</title>
+	<title><?= appTitle ?></title>
 
   <!-- 
     https://help.sap.com/saphelp_snc700_ehp04/helpdata/en/a0/4b0d10fb494d1cb722b9e341b584ba/frameset.htm
@@ -21,7 +21,7 @@
 </head>
 <body>
   <?!= include('main_css'); ?>
-  <div id="load_screen"><div id="loading">Loading document... This could take up to 1-2 mins to finish.</div></div>
+  <div id="load_screen"><div id="loading"><?= splashMessage ?></div></div>
   
   <!-- Start loading Open UI5 framework -->
   <?!= include('load_sapui5_framework'); ?>
