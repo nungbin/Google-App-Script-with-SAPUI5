@@ -42,7 +42,7 @@ function prepareDataForHTML(pTemplate) {
 }
 
 
-function getRangeData(pSheet, pRange) {
+function getRangeData(pSheet, pRange, pFieldName) {
   let oData, oData1;
 
   // pSheet = ""; pRange="D20:D22";
@@ -56,7 +56,17 @@ function getRangeData(pSheet, pRange) {
   if ( Array.isArray(oData) === true ) {
     // https://youtu.be/f9dqsHDrQCc?t=1340
     // convert two dimensional array to one dimensional array
-    oData1 = oData.map(function(r) { return r[0]; });
+    if ( pFieldName === "" ) {
+      oData1 = oData.map(function(r) { return r[0]; });  
+    }
+    else {
+      oData1 = oData.map(function(r) {
+        let t = {};
+
+        t[pFieldName] =  r[0]; 
+        return t; 
+      }); 
+    }
   }
   return oData1;
 }

@@ -62,13 +62,21 @@
       removeLoadingScreen();
 
       let oModel = new sap.ui.model.json.JSONModel();
-      oModel.setData(initData());
-      console.log(oModel);
-      oView.setModel(oModel);
-      //sap.ui.getCore().setModel(oModel);
+      let oInitData = initData();
+      // sap.ui.getCore().setModel(oModel);
 
-      getRangeData("", "D20:D22").then((res) => {
-        console.log(res);
+      getRangeData("", "D20:D22", "").then((res) => {
+        let t = [];
+
+        for (var i = 0; i < res.length; i++){
+            t.push({ "key" : "key" + i,
+                     "text": res[i]
+                   });
+        }
+        
+        oInitData.dropdown = t;
+        oModel.setData(oInitData);
+        oView.setModel(oModel);
       })
     }
 </script>

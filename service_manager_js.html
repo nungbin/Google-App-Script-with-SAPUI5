@@ -1,7 +1,8 @@
 <script>
   function initData() {
     let oData = {
-      label1:    "Label 1"
+      label1:   "Label 1",
+      dropdown: []
     }
 
     return oData;
@@ -25,11 +26,11 @@
   }
 
 
-  function getRangeData(pSheet, pRange) {
+  function getRangeData(pSheet, pRange, pFieldName) {
     return new Promise (function (resolve, reject) {
       google.script.run.withSuccessHandler((pDataArray) => {
         resolve(pDataArray);
-      }).getRangeData(pSheet, pRange);
+      }).getRangeData(pSheet, pRange, pFieldName);
     })
   }
 </script>
