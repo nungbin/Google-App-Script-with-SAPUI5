@@ -42,6 +42,26 @@ function prepareDataForHTML(pTemplate) {
 }
 
 
+function getRangeData(pSheet, pRange) {
+  let oData, oData1;
+
+  // pSheet = ""; pRange="D20:D22";
+  
+  if ( pSheet === "" ) {
+    oData = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange(pRange).getValues();
+  }
+  else {
+    oData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(pSheet).getRange(pRange).getValues();
+  }
+  if ( Array.isArray(oData) === true ) {
+    // https://youtu.be/f9dqsHDrQCc?t=1340
+    // convert two dimensional array to one dimensional array
+    oData1 = oData.map(function(r) { return r[0]; });
+  }
+  return oData1;
+}
+
+
 function saveToSheet(pData) {
   let oArr = [];
 
