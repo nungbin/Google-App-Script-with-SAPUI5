@@ -1,7 +1,29 @@
 <script>
+  function rootViewInit(pView) {
+      let oModel = new sap.ui.model.json.JSONModel();
+      let oInitData = initData();
+      oModel.setData(oInitData);
+      pView.setModel(oModel);
+      // sap.ui.getCore().setModel(oModel);
+
+      getRangeData("", "D20:D24", "").then((res) => {
+        let t = [];
+
+        for (var i = 0; i < res.length; i++){
+            t.push({ "key" : "key" + i,
+                     "text": res[i]
+                   });
+        }
+
+        oInitData.dropdown = t;
+        oModel.setData(oInitData);
+        pView.setModel(oModel);
+      })    
+  }
+
+  
   function btn1Press() {
     console.log("btn1Press triggered!");
 
-    
   }
 </script>
