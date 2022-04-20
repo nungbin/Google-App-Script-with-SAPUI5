@@ -42,16 +42,23 @@ function prepareDataForHTML(pTemplate) {
 }
 
 
-function getRangeData(pSheet, pRange, pFieldName) {
+function getRangeData(pSheet, pRange, pFieldName, pLastRow) {
   let oData, oData1;
 
-  // pSheet = ""; pRange="D20:D22";
+  // pSheet = "Store"; pRange="A2:A";  pFieldName=""; pLastRow = true;
   
-  if ( pSheet === "" ) {
-    oData = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange(pRange).getValues();
-  }
-  else {
-    oData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(pSheet).getRange(pRange).getValues();
+  if ( pLastRow === true ) {
+    let lSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(pSheet);
+    // pRange="A2:A"
+    let lLastRow = lSheet.getRange(pRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
+    oData        = lSheet.getRange(pRange + lLastRow).getValues();
+  } else {
+    if ( pSheet === "" ) {
+      oData = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange(pRange).getValues();
+    }
+    else {
+      oData = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(pSheet).getRange(pRange).getValues();
+    }
   }
   if ( Array.isArray(oData) === true ) {
     // https://youtu.be/f9dqsHDrQCc?t=1340

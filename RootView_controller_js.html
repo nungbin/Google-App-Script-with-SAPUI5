@@ -6,9 +6,9 @@
       pView.setModel(oModel);
       // sap.ui.getCore().setModel(oModel);
 
-      getRangeData("", "D20:D24", "").then((res) => {
+      getRangeData("Store", "A2:A", "", true).then((res) => {
         let t = [];
-
+console.log(res);
         for (var i = 0; i < res.length; i++){
             t.push({ "key" : "key" + i,
                      "text": res[i]
