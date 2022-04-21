@@ -8,14 +8,14 @@
 
       getRangeData("Store", "A2:A", "", true).then((res) => {
         let t = [];
-console.log(res);
+
         for (var i = 0; i < res.length; i++){
             t.push({ "key" : "key" + i,
                      "text": res[i]
                    });
         }
 
-        oInitData.dropdown = t;
+        oInitData.dropdown0 = t;
         oModel.setData(oInitData);
         pView.setModel(oModel);
       })    
@@ -23,7 +23,9 @@ console.log(res);
 
   
   function btn1Press() {
-    console.log("btn1Press triggered!");
+    let oView = window.rootView;
+
+    console.log(oView.getModel());
 
   }
 </script>
