@@ -80,8 +80,13 @@ function getRangeData(pSheet, pRange, pFieldName, pLastRow) {
 
 
 function saveToSheet(pData) {
-  let oArr = [];
+  let rowData = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange("A1:C1").getValues();
 
-  oArr.push(pData);
-  var ss = SpreadsheetApp.getActiveSheet().appendRow(oArr);
+  let oArr = [];
+  oArr.push("1");
+  oArr.push("2");
+  oArr.push("3");
+  SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().appendRow(oArr);
 }
+
+
