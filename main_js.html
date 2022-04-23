@@ -3,10 +3,11 @@
     $.sap.require("sap.ui.model.json.JSONModel");  // Dynamic loading of JSON Model
 
 		sap.ui.getCore().attachInit(function () {
+      const xmlViewsArray = xmlViewsFromGS.split(",");
       let sViewContent = [];
-      let oRootViewID = '1PNAcp3zDFtTN8i33b5LjtfIR2GcfmOu0', // RootView.xml
-          oView1ID    = '1h06bYpYTn5RsKD2bzZ_G2gcOPwnvR-8s',
-          oView2ID    = '1bXvVxshNm7RnFlyN90Ny8GUIvVN5U8B6';
+      let oRootViewID = xmlViewsArray[0]  // RootView.xml
+          oView1ID    = xmlViewsArray[1] || '1h06bYpYTn5RsKD2bzZ_G2gcOPwnvR-8s',
+          oView2ID    = xmlViewsArray[2] || '1bXvVxshNm7RnFlyN90Ny8GUIvVN5U8B6';
 
       // Ensure the loading sequence of all views
       // const results = Promise.all([ getViewContent(oRootViewID),

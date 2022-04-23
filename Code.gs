@@ -4,6 +4,7 @@
 
 function doGet(e) {
   Logger.log(e.parameter);
+  Logger.log(Session.getActiveUser().getEmail());
 
   // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
   // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
@@ -36,8 +37,11 @@ function fileRead(pFileId) {
 
 
 function prepareDataForHTML(pTemplate) {
-  pTemplate.appTitle      = "My Title";  // use this technique to pass variables from Server side to CLient side
-  pTemplate.splashMessage = "Loading document... This could take up to 1-2 mins to finish.";
+  let xmlViewsFromGS = getRangeData("XML Views", "B2:B", "", true);
+
+  pTemplate.appTitle       = "My Title";  // use this technique to pass variables from Server side to CLient side
+  pTemplate.splashMessage  = "Loading document... This could take up to 1-2 mins to finish.";
+  pTemplate.xmlViewsFromGS = xmlViewsFromGS;
   return pTemplate;
 }
 

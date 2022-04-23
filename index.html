@@ -20,6 +20,15 @@
 	</script> -->
 </head>
 <body>
+  <!-- 
+    Passing variables from server-side script
+    https://stackoverflow.com/questions/66897542/trouble-passing-a-variable-to-html-from-google-apps-script-and-then-back-to-gs-a
+  -->
+  <script>
+    var xmlViewsFromGS = "<?!= xmlViewsFromGS ?>";
+  </script>
+
+
   <?!= include('main_css'); ?>
   <div id="load_screen"><div id="loading"><?= splashMessage ?></div></div>
   
