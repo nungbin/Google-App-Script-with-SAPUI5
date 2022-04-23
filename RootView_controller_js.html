@@ -10,22 +10,32 @@
         let t = [];
 
         for (var i = 0; i < res.length; i++){
-            t.push({ "key" : "key" + i,
+            t.push({ "key" : i,
                      "text": res[i]
                    });
         }
 
-        oInitData.dropdown0 = t;
+        oInitData.DDStore = t;
         oModel.setData(oInitData);
         pView.setModel(oModel);
       })    
   }
 
   
-  function btn1Press() {
-    let oView = window.rootView;
+  function btnAdd() {
+    let oView    = window.rootView;
+    let keyStore = oView.byId("idDDStore").getSelectedKey(),
+        keyIngre = oView.byId("idDDIngre").getSelectedKey()
 
-    console.log(oView.getModel());
+    console.log(keyStore);
+    if ( keyStore === "" || keyStore === " " ) {
+      sap.m.MessageToast.show("Please select a store!");
+      return;
+    }
+    if ( keyIngre === "" || keyIngre === " " ) {
+      sap.m.MessageToast.show("Please select an ingredient!");
+      return;
+    }
 
   }
 </script>
