@@ -37,6 +37,22 @@
       return;
     }
 
+    let tt  = oView.getModel();
+    let ttt = tt.getData();
+    let t = ttt.GroceryList;
+    const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
+    const sIngre = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
+    console.log(sStore + ":" + sIngre);
+    t.push({ "chkGrocery"  : false,
+             "Store"       : sStore,
+             "Ingredient"  : sIngre,
+             "Recipe"      : ""
+          });
+
+    // don't understand why setting data/model has to be this convoluted!!!
+    ttt.GroceryList = t;
+    tt.setData(ttt);
+    oView.setModel(tt);
   }
 
 
