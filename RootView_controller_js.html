@@ -22,7 +22,7 @@
   }
 
   
-  function btnAdd() {
+  function root_btnAdd() {
     let oView    = window.rootView;
     let keyStore = oView.byId("idDDStore").getSelectedKey(),
         keyIngre = oView.byId("idDDIngre").getSelectedKey()
@@ -37,5 +37,15 @@
       return;
     }
 
+  }
+
+
+  function root_storeComboChange() {
+    let oView    = window.rootView;
+    let keyStore = oView.byId("idDDStore").getSelectedKey();
+    let keyItem  = oView.byId("idDDStore").getSelectedItem();
+
+    console.log(keyItem.getBindingContext().getObject().key);
+    console.log(keyItem.getBindingContext().getObject().text);
   }
 </script>
