@@ -83,6 +83,38 @@ function getRangeData(pSheet, pRange, pFieldName, pLastRow) {
 }
 
 
+function getIngredientsPerStore(pStore) {
+  const text = pStore || "Superstore";
+  const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Ingredient Database").createTextFinder(text);
+  let   matched = [],
+        matchedValue,
+        matchedColumn;
+  textFinder.matchCase(false);
+  const arrayMatch = textFinder.findAll();
+  
+  for (const i=0 ; i<arrayMatch.length ; i++) {
+    matchedValue  = arrayMatch[i].getValue();
+    matchedColumn = arrayMatch[i].getColumn();
+    break;
+  }
+  
+  if ( matchedValue != "" ) {
+    const sSheetName = "Ingredient Database";
+    const rRange     = "A2:H";
+    let lSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sSheetName );
+    let lLastRow = lSheet.getRange(rRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
+    let oData    = lSheet.getRange(rRange + lLastRow).getValues();
+    oData.forEach((row) => {
+      if ( row[matchedColumn-1] === 'x' ) {
+        matched.push(row[0]);       
+      }
+    })
+  }
+  Logger.log(matched);
+  return matched;
+}
+
+
 function saveToSheet(pData) {
   let rowData = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange("A1:C1").getValues();
 

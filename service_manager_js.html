@@ -28,10 +28,19 @@
 
 
   function getRangeData(pSheet, pRange, pFieldName, pLastRow) {
-    return new Promise (function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       google.script.run.withSuccessHandler((pDataArray) => {
         resolve(pDataArray);
       }).getRangeData(pSheet, pRange, pFieldName, pLastRow);
+    })
+  }
+
+
+  function getIngridentsPerStore(pStore) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).getIngredientsPerStore(pStore);
     })
   }
 </script>

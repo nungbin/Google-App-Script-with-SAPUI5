@@ -44,8 +44,32 @@
     let oView    = window.rootView;
     let keyStore = oView.byId("idDDStore").getSelectedKey();
     let keyItem  = oView.byId("idDDStore").getSelectedItem();
+    const lStore = keyItem.getBindingContext().getObject().text;
+    
+    oView.byId("idDDStore").enabled = false;
+    oView.byId("idDDIngre").enabled = false;
 
     console.log(keyItem.getBindingContext().getObject().key);
     console.log(keyItem.getBindingContext().getObject().text);
+    getIngridentsPerStore(lStore).then((res) => {
+      oView.byId("idDDIngre").clearSelection();
+
+      let t   = [];
+      let tt  = oView.getModel();
+      let ttt = tt.getData();
+
+      for (var i = 0; i < res.length; i++){
+          t.push({ "key" : i,
+                   "text": res[i]
+                });
+      }
+      // don't understand why setting data/model has to be this convoluted!!!
+      ttt.DDIngre = t;
+      tt.setData(ttt);
+      oView.setModel(tt);
+
+      oView.byId("idDDStore").enabled = true;
+      oView.byId("idDDIngre").enabled = true;
+    })
   }
 </script>
