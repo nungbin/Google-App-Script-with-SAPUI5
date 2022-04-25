@@ -18,7 +18,20 @@
         oInitData.DDStore = t;
         oModel.setData(oInitData);
         pView.setModel(oModel);
-      })    
+      })
+
+
+      // Finally got it working of using Model name reference
+      let oModel_1 = new sap.ui.model.json.JSONModel();
+      let t = { PastGroceryList: [] };
+      t.PastGroceryList.push({
+        "Store":      "S1",
+        "Ingredient": "I1",
+        "Recipe":     "R1"
+      })
+      oModel_1.setData(t);
+      pView.byId("iDtblPastGroceryList").setModel(oModel_1, "PGL");
+      //console.log(pView.byId("iDtblPastGroceryList"));
   }
 
   
@@ -58,34 +71,33 @@
 
   function root_storeComboChange() {
     let oView    = window.rootView;
+
+    oView.byId("idDDStore").setEnabled(false);
+    oView.byId("idDDStore").setBusy(true);
+    oView.byId("idDDIngre").setEnabled(false);
+    oView.byId("idDDIngre").setBusy(true);
+
     let keyStore = oView.byId("idDDStore").getSelectedKey();
     let keyItem  = oView.byId("idDDStore").getSelectedItem();
     const lStore = keyItem.getBindingContext().getObject().text;
-    
-    oView.byId("idDDStore").enabled = false;
-    oView.byId("idDDIngre").enabled = false;
 
-    console.log(keyItem.getBindingContext().getObject().key);
-    console.log(keyItem.getBindingContext().getObject().text);
+    //console.log(keyItem.getBindingContext().getObject().key);
+    //console.log(keyItem.getBindingContext().getObject().text);
     getIngridentsPerStore(lStore).then((res) => {
       oView.byId("idDDIngre").clearSelection();
 
       let t   = [];
-      let tt  = oView.getModel();
-      let ttt = tt.getData();
-
       for (var i = 0; i < res.length; i++){
           t.push({ "key" : i,
                    "text": res[i]
                 });
       }
-      // don't understand why setting data/model has to be this convoluted!!!
-      ttt.DDIngre = t;
-      tt.setData(ttt);
-      oView.setModel(tt);
+      oView.getModel().setProperty("/DDIngre", t);
 
-      oView.byId("idDDStore").enabled = true;
-      oView.byId("idDDIngre").enabled = true;
+      oView.byId("idDDStore").setEnabled(true);
+      oView.byId("idDDStore").setBusy(false);
+      oView.byId("idDDIngre").setEnabled(true);
+      oView.byId("idDDIngre").setBusy(false);
     })
   }
 </script>

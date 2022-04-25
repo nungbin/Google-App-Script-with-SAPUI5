@@ -40,7 +40,7 @@ function prepareDataForHTML(pTemplate) {
   let xmlViewsFromGS = getRangeData("XML Views", "B2:B", "", true);
 
   pTemplate.appTitle       = "My Title";  // use this technique to pass variables from Server side to CLient side
-  pTemplate.splashMessage  = "Loading document... This could take up to 1-2 mins to finish.";
+  pTemplate.splashMessage  = "Loading UI5 framework... This could take up to 1-2 mins to finish.";
   pTemplate.xmlViewsFromGS = xmlViewsFromGS;
   return pTemplate;
 }
@@ -106,7 +106,10 @@ function getIngredientsPerStore(pStore) {
     let oData    = lSheet.getRange(rRange + lLastRow).getValues();
     oData.forEach((row) => {
       if ( row[matchedColumn-1] === 'x' ) {
-        matched.push(row[0]);       
+        const lResult = custConcat(row[1], row[2], row[3]);
+        
+        matched.push(lResult);
+        //matched.push(row[0]);       
       }
     })
   }
