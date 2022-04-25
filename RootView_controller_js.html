@@ -15,6 +15,7 @@
                    });
         }
 
+        oInitData.TopFlexBoxBusy = false;
         oInitData.DDStore = t;
         oModel.setData(oInitData);
         pView.setModel(oModel);
@@ -40,7 +41,6 @@
     let keyStore = oView.byId("idDDStore").getSelectedKey(),
         keyIngre = oView.byId("idDDIngre").getSelectedKey()
 
-    console.log(keyStore);
     if ( keyStore === "" || keyStore === " " ) {
       sap.m.MessageToast.show("Please select a store!");
       return;
@@ -50,32 +50,29 @@
       return;
     }
 
-    let tt  = oView.getModel();
-    let ttt = tt.getData();
-    let t = ttt.GroceryList;
+    oView.getModel().setProperty("/TopFlexBoxBusy", true);
+    let t = oView.getModel().getProperty("/GroceryList");
     const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
     const sIngre = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
-    console.log(sStore + ":" + sIngre);
     t.push({ "chkGrocery"  : false,
              "Store"       : sStore,
              "Ingredient"  : sIngre,
              "Recipe"      : ""
           });
 
-    // don't understand why setting data/model has to be this convoluted!!!
-    ttt.GroceryList = t;
-    tt.setData(ttt);
-    oView.setModel(tt);
+    oView.getModel().setProperty("/GroceryList", t);
+    oView.getModel().setProperty("/TopFlexBoxBusy", false);
   }
 
 
   function root_storeComboChange() {
     let oView    = window.rootView;
 
-    oView.byId("idDDStore").setEnabled(false);
-    oView.byId("idDDStore").setBusy(true);
-    oView.byId("idDDIngre").setEnabled(false);
-    oView.byId("idDDIngre").setBusy(true);
+    //oView.byId("idDDStore").setEnabled(false);
+    //oView.byId("idDDStore").setBusy(true);
+    //oView.byId("idDDIngre").setEnabled(false);
+    //oView.byId("idDDIngre").setBusy(true);
+    oView.getModel().setProperty("/TopFlexBoxBusy", true);
 
     let keyStore = oView.byId("idDDStore").getSelectedKey();
     let keyItem  = oView.byId("idDDStore").getSelectedItem();
@@ -94,10 +91,11 @@
       }
       oView.getModel().setProperty("/DDIngre", t);
 
-      oView.byId("idDDStore").setEnabled(true);
-      oView.byId("idDDStore").setBusy(false);
-      oView.byId("idDDIngre").setEnabled(true);
-      oView.byId("idDDIngre").setBusy(false);
+      //oView.byId("idDDStore").setEnabled(true);
+      //oView.byId("idDDStore").setBusy(false);
+      //oView.byId("idDDIngre").setEnabled(true);
+      //oView.byId("idDDIngre").setBusy(false);
+      oView.getModel().setProperty("/TopFlexBoxBusy", false);
     })
   }
 </script>
