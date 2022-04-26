@@ -44,4 +44,22 @@
       }).getIngredientsPerStore(pStore);
     })
   }
+
+
+  function appendGroceryToSheet(pSheet, pDataArray) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).appendGroceryToSheet(pSheet, pDataArray);
+    })
+  }
+
+
+  function retrieveGrocery(pSheet) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).retrieveGrocery(pSheet);
+    })
+  }
 </script>

@@ -19,7 +19,16 @@
         oInitData.DDStore = t;
         oModel.setData(oInitData);
         pView.setModel(oModel);
+
+
+        // retrieve grocery
+        retrieveGrocery("Result").then((res) => {
+          console.log(res);
+          pView.getModel().setProperty("/GroceryList", res);
+        })
       })
+
+
 
 
       // Finally got it working of using Model name reference
@@ -51,17 +60,25 @@
     }
 
     oView.getModel().setProperty("/TopFlexBoxBusy", true);
-    let t = oView.getModel().getProperty("/GroceryList");
+    
+    let arrayGrocery = [];
     const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
     const sIngre = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
-    t.push({ "chkGrocery"  : false,
-             "Store"       : sStore,
-             "Ingredient"  : sIngre,
-             "Recipe"      : ""
-          });
+    arrayGrocery.push(sStore);
+    arrayGrocery.push(sIngre);
+    arrayGrocery.push("");
+    appendGroceryToSheet("Result", arrayGrocery).then((res) => {
+      console.log(res);
 
-    oView.getModel().setProperty("/GroceryList", t);
-    oView.getModel().setProperty("/TopFlexBoxBusy", false);
+      const t = oView.getModel().getProperty("/GroceryList");
+      oView.getModel().setProperty("/GroceryList", res);
+      oView.getModel().setProperty("/TopFlexBoxBusy", false);
+    })
+    //t.push({ "chkGrocery"  : false,
+    //         "Store"       : sStore,
+    //         "Ingredient"  : sIngre,
+    //         "Recipe"      : ""
+    //      });
   }
 
 

@@ -118,14 +118,50 @@ function getIngredientsPerStore(pStore) {
 }
 
 
-function saveToSheet(pData) {
-  let rowData = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange("A1:C1").getValues();
+function appendGroceryToSheet(pSheet, pDataArray) {
+  const sRange = "A1:C";
+  let lDate = new Date();
 
-  let oArr = [];
-  oArr.push("1");
-  oArr.push("2");
-  oArr.push("3");
-  SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().appendRow(oArr);
+  const lSheet = pSheet || "Result";
+  //pDataArray = [];
+  //pDataArray.push("1");
+  //pDataArray.push("2");
+  //pDataArray.push("3");
+  pDataArray.push(Session.getActiveUser().getEmail());
+  pDataArray.push(lDate.toLocaleString());
+  
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).appendRow(pDataArray);
+
+  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
+  const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
+  const oData    = oSheet.getRange(sRange + lLastRow).getValues();
+  
+  let oResult = [];
+  for ( i=1 ; i<oData.length ; i++ ) {
+    oResult.push({ "Store"      : oData[i][0],
+                   "Ingredient" : oData[i][1],
+                   "Recipe"     : oData[i][2]
+                });
+  }
+  return oResult;
 }
 
 
+function retrieveGrocery(pSheet) {
+  const sRange = "A1:C";
+  const lSheet = pSheet || "Result";
+
+  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
+  const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
+  const oData    = oSheet.getRange(sRange + lLastRow).getValues();
+  
+  let oResult = [];
+  for ( i=1 ; i<oData.length ; i++ ) {
+    oResult.push({ "Store"      : oData[i][0],
+                   "Ingredient" : oData[i][1],
+                   "Recipe"     : oData[i][2]
+                });
+  }
+  Logger.log(oResult);
+  return oResult;  
+}
