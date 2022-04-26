@@ -157,6 +157,11 @@ function retrieveGrocery(pSheet) {
   
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
+    if ( oData[i][0] === "" &&
+         oData[i][1] === "" && 
+         oData[i][2] === "" ) {
+      break;
+    }
     if ( oData[i][0] != "" ||
          oData[i][1] != "" || 
          oData[i][2] != "" ) {
