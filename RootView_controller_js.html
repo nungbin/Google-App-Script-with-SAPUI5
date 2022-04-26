@@ -6,27 +6,32 @@
       pView.setModel(oModel);
       // sap.ui.getCore().setModel(oModel);
 
-      getRangeData("Store", "A2:A", "", true).then((res) => {
+      // Ensure the loading sequence of all views
+      const results = Promise.all([ getRangeData("Store", "A2:A", "", true),
+                                    retrieveGrocery("Result")
+      ])
+      .then(function(res) {
+        //res will be an array
+        console.log(res);
+
         let t = [];
 
-        for (var i = 0; i < res.length; i++){
+        for (var i = 0; i < res[0].length; i++){
             t.push({ "key" : i,
-                     "text": res[i]
+                     "text": res[0][i]
                    });
-        }
+        }        
 
         oInitData.TopFlexBoxBusy = false;
         oInitData.DDStore = t;
+        oInitData.GroceryList = res[1];
         oModel.setData(oInitData);
-        pView.setModel(oModel);
+        pView.setModel(oModel);        
+      }).catch(function(msg) {
+        console.log(msg);
+      });
 
 
-        // retrieve grocery
-        retrieveGrocery("Result").then((res) => {
-          console.log(res);
-          pView.getModel().setProperty("/GroceryList", res);
-        })
-      })
 
 
 

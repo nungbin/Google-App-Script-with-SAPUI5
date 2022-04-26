@@ -157,10 +157,14 @@ function retrieveGrocery(pSheet) {
   
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
-    oResult.push({ "Store"      : oData[i][0],
-                   "Ingredient" : oData[i][1],
-                   "Recipe"     : oData[i][2]
-                });
+    if ( oData[i][0] != "" ||
+         oData[i][1] != "" || 
+         oData[i][2] != "" ) {
+      oResult.push({ "Store"      : oData[i][0],
+                     "Ingredient" : oData[i][1],
+                     "Recipe"     : oData[i][2]
+                  });
+    }
   }
   Logger.log(oResult);
   return oResult;  
