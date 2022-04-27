@@ -17,15 +17,14 @@
         ])
         .then(function(res) {
           //res will be an array
-          console.log(res);
+
           let oModel = new sap.ui.model.json.JSONModel();
           let oInitData = initData();
-
           let t = [];
 
           for (var i = 0; i < res[0].length; i++){
               t.push({ "key" : i,
-                      "text": res[0][i]
+                       "text": res[0][i]
                     });
           }        
 
@@ -33,13 +32,28 @@
           oInitData.DDStore = t;
           oInitData.GroceryList = res[1];
           oModel.setData(oInitData);
-          that.getView().setModel(oModel);     
+          that.getView().setModel(oModel);          
+
+
+          // Finally got it working of using Model name reference
+          let oModel_1 = new sap.ui.model.json.JSONModel();
+          t = [];
+          t = { PastGroceryList: [] };
+          t.PastGroceryList.push({
+            "Store":      "S1",
+            "Ingredient": "I1",
+            "Recipe":     "R1"
+          })
+          oModel_1.setData(t);
+          that.getView().byId("iDtblPastGroceryList").setModel(oModel_1, "PGL");          
+
+
         }).catch(function(msg) {
           console.log(msg);
         });
       },
 
-      storeComboChange: function(oEvent) {
+      onStoreComboChange: function(oEvent) {
         const oView = this.getView();
         oView.getModel().setProperty("/TopFlexBoxBusy", true);
 
@@ -63,7 +77,7 @@
         })  
       },
 
-      btnAdd: function(oEvent) {
+      onBtnAdd: function(oEvent) {
         const oView = this.getView();
         let keyStore = oView.byId("idDDStore").getSelectedKey(),
             keyIngre = oView.byId("idDDIngre").getSelectedKey()
@@ -88,11 +102,12 @@
         appendGroceryToSheet("Result", arrayGrocery).then((res) => {
           const t = oView.getModel().getProperty("/GroceryList");
           oView.getModel().setProperty("/GroceryList", res);
+          oView.byId("idDDIngre").clearSelection();
           oView.getModel().setProperty("/TopFlexBoxBusy", false);
         })
       },
 
-      onSelectionChange: function(oEvent) {
+      onSelectedGrocery: function(oEvent) {
 
       }
     });

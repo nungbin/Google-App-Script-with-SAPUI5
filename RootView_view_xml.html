@@ -20,7 +20,7 @@
                                     items="{ path: '/DDStore',                                                
                                              sorter: { path: 'text' }  
                                           }"
-                                    selectionChange=".storeComboChange">
+                                    selectionChange=".onStoreComboChange">
                               <core:Item key="{key}" text="{text}"/>
                           </ComboBox>
                       </items>
@@ -39,7 +39,7 @@
                   </FlexBox>
                   <FlexBox width="100%" id="box5" alignItems="End">
                       <items>
-                          <Button xmlns="sap.m" text="Add" id="idBTNAdd" class="sapUiSmallMargin" press=".btnAdd"/>
+                          <Button xmlns="sap.m" text="Add" id="idBTNAdd" class="sapUiSmallMargin" press=".onBtnAdd"/>
                       </items>
                   </FlexBox>
               </items>
@@ -49,7 +49,7 @@
                   <Table noDataText="Hit the Add button to start adding groceries..." 
                           id="iDtblGroceryList"
                         inset="false"
-                        selectionChange="root_selectGrocery"
+                        selectionChange=".onSelectedGrocery"
                         mode="SingleSelectLeft"
                         items="{
                           path: '/GroceryList',
@@ -97,13 +97,13 @@
           <Panel xmlns="sap.m" width="auto" expandable="true" id="panel0" class="sapUiResponsiveMargin">
               <headerToolbar>
                   <Toolbar id="toolbar1">
-                      <Title text=""/>
+                      <Title text="Grocery History"/>
                       <ToolbarSpacer/>
                       <Button icon="sap-icon://settings" visible="false"/>
                   </Toolbar>
               </headerToolbar>
               <content>
-                  <Text text="Panel Content" id="text4"/>
+                  <Text text="" id="text4"/>
                   <Table noDataText="Drop column list items here and columns in the area above" 
                           id="iDtblPastGroceryList"
                         inset="false"
