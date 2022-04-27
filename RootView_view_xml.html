@@ -71,12 +71,16 @@
                           </Column>
                           <Column id="column3" width="100%">
                               <header>
-                                  <Label text="Recipe" id="label3"/>
+                                  <Label text="Note/Recipe" id="label3"/>
                               </header>
                           </Column>
                       </columns>
                       <items>
-                          <ColumnListItem type="Active" id="iDtblGroceryListItem" vAlign="Middle">
+                          <ColumnListItem type="Detail" 
+                                          id="iDtblGroceryListItem" 
+                                          vAlign="Middle"
+                                          detailPress=".onGroceryItemEdit" 
+                          >
                               <cells>
                                   <Text text="{Store}"      id="iDTXTStore"/>
                                   <Text text="{Ingredient}" id="iDTXTIngre"/>
@@ -85,6 +89,7 @@
                                     id="iDTXTRecipe"
                                     placeholder="Enter recipe"
                                     value="{Recipe}"
+                                    editable="false"
                                     class="sapUiSmallMarginBottom">
                                   </Input>
                               </VBox>

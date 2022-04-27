@@ -107,8 +107,16 @@
         })
       },
 
-      onSelectedGrocery: function(oEvent) {
+      onGroceryItemEdit: function(oEvent) {
+        // learned from https://plnkr.co/edit/qifky6plPEzFtlpyV2vb?p=preview&preview
+        console.log("onGroceryItemEdit event triggered!!!")
+      },
 
+      onSelectedGrocery: function(oEvent) {
+          // learned from https://plnkr.co/edit/mNxnG4CnxmzjkCGKkDEw?p=preview&preview
+          var oSelectedItem = oEvent.getParameter("listItem");
+          var oModel = oSelectedItem.getBindingContext().getObject();
+          alert(JSON.stringify(oModel));
       }
     });
   });
