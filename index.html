@@ -24,14 +24,7 @@
     Passing variables from server-side script
     https://stackoverflow.com/questions/66897542/trouble-passing-a-variable-to-html-from-google-apps-script-and-then-back-to-gs-a
   -->
-  <script>
-    var xmlViewsFromGS = "<?!= xmlViewsFromGS ?>";
-  </script>
 
-
-  <?!= include('main_css'); ?>
-  <div id="load_screen"><div id="loading"><?= splashMessage ?></div></div>
-  
   <!-- Start loading Open UI5 framework -->
   <?!= include('load_sapui5_framework'); ?>
 
@@ -39,13 +32,9 @@
   <div class="sapUiBody sapUiSizeCompact" id="content">
   </div>
 
-  <?!= include('service_manager_js'); ?>
-  <?!= include('RootView_controller_js'); ?>
-  <!-- 
-    <?!= include('page1_controller_js'); ?>
-    <?!= include('page2_controller_js'); ?> 
-  -->
+  <?!= include('service_manager_js'); ?>  
+  <?!= include('RootView_controller_js'); ?> 
+  <?!= include('RootView_view_xml'); ?>
   <?!= include('main_js'); ?>
-
 </body>
 </html>

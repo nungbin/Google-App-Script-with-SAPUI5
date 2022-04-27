@@ -1,67 +1,9 @@
-	<script type="text/javascript">
-    $.sap.require("sap.ui.core.mvc.XMLView");  // Dynamic loading of XMLView
-    $.sap.require("sap.ui.model.json.JSONModel");  // Dynamic loading of JSON Model
+	<script>
+    // Instantiate the View and display
+    var oView = sap.ui.xmlview({
+      viewContent: jQuery('#oView').html()
+    });
 
-		sap.ui.getCore().attachInit(function () {
-      const xmlViewsArray = xmlViewsFromGS.split(",");
-      let sViewContent = [];
-      let oRootViewID = xmlViewsArray[0]  // RootView.xml
-          oView1ID    = xmlViewsArray[1] || '1h06bYpYTn5RsKD2bzZ_G2gcOPwnvR-8s',
-          oView2ID    = xmlViewsArray[2] || '1bXvVxshNm7RnFlyN90Ny8GUIvVN5U8B6';
+    oView.placeAt('content');
 
-      // Ensure the loading sequence of all views
-      // const results = Promise.all([ getViewContent(oRootViewID),
-      //                               getViewContent(oView1ID),
-      //                               getViewContent(oView2ID)
-      // ])
-      // .then(function(res) {
-      //   //res will be an array
-      //   mainLogic(res);
-      // }).catch(function(msg) {
-      //   console.log(msg);
-      // });
-      getViewContent(oRootViewID).then(function (res) {
-        // console.log(res);
-        sViewContent.push(res);
-        getViewContent(oView1ID).then(function (res) {
-          //console.log(res);
-          sViewContent.push(res);
-          getViewContent(oView2ID).then(function (res) {
-            //console.log(res);
-            sViewContent.push(res);
-            initView(sViewContent);
-          })
-        })
-      })
-		});
-
-
-    function initView(pViewContent) {
-      // console.log(pViewContent);
-
-      sap.ui.core.mvc.XMLView.create({
-        definition: pViewContent[1]
-      }).then((view) => {
-        sap.ui.core.mvc.XMLView.create({
-          definition: pViewContent[2]
-        }).then((view) => {
-          // https://stackoverflow.com/questions/44872228/parse-xml-view-from-string
-          sap.ui.core.mvc.XMLView.create({
-            definition: pViewContent[0]
-          }).then((view) => {
-            mainLogic(view);
-          })
-        })
-      })       
-    }
-
-
-    function mainLogic(oView) {
-      window.rootView = oView;
-      oView.placeAt("content");
-
-      removeLoadingScreen();
-
-      rootViewInit(oView);
-    }
 </script>

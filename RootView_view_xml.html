@@ -1,0 +1,149 @@
+<!-- XML-based view definition -->
+<script id="oView" type="sapui5/xmlview">
+<mvc:View
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    controllerName="myView.Template"
+>
+  <FlexBox width="100%" id="box0" busy="{/TopFlexBoxBusy}" direction="Column">
+      <items>
+          <FlexBox width="100%" id="box0_1650549696902" direction="Row">
+              <items>
+                  <FlexBox width="100%" id="box1" direction="Column">
+                      <items>
+                          <Label text="Store" width="100%" id="label0"/>
+                          <ComboBox id="idDDStore" 
+                                    class="sapUiSmallMarginEnd"
+                                    items="{ path: '/DDStore',                                                
+                                             sorter: { path: 'text' }  
+                                          }"
+                                    selectionChange=".storeComboChange">
+                              <core:Item key="{key}" text="{text}"/>
+                          </ComboBox>
+                      </items>
+                  </FlexBox>
+                  <FlexBox width="100%" id="box3" direction="Column">
+                      <items>
+                          <Label text="Ingredient" width="100%" id="label1"/>
+                          <ComboBox id="idDDIngre" 
+                                    class="sapUiSmallMarginEnd"
+                                    items="{ path: '/DDIngre',                                                
+                                             sorter: { path: 'text' }          
+                                          }">
+                              <core:Item key="{key}" text="{text}"/>
+                          </ComboBox>
+                      </items>
+                  </FlexBox>
+                  <FlexBox width="100%" id="box5" alignItems="End">
+                      <items>
+                          <Button xmlns="sap.m" text="Add" id="idBTNAdd" class="sapUiSmallMargin" press=".btnAdd"/>
+                      </items>
+                  </FlexBox>
+              </items>
+          </FlexBox>
+          <FlexBox width="100%" id="box0_1650550633501">
+              <items>
+                  <Table noDataText="Hit the Add button to start adding groceries..." 
+                          id="iDtblGroceryList"
+                        inset="false"
+                        selectionChange="root_selectGrocery"
+                        mode="SingleSelectLeft"
+                        items="{
+                          path: '/GroceryList',
+                          sorter: {
+                            path: 'Store'
+                        }
+                      }"
+                  >
+                      <columns>
+                          <Column id="column1" width="100%">
+                              <header>
+                                  <Label text="Store" id="label1_1650550646049"/>
+                              </header>
+                          </Column>
+                          <Column id="column2" width="100%">
+                              <header>
+                                  <Label text="Ingredient" id="label2"/>
+                              </header>
+                          </Column>
+                          <Column id="column3" width="100%">
+                              <header>
+                                  <Label text="Recipe" id="label3"/>
+                              </header>
+                          </Column>
+                      </columns>
+                      <items>
+                          <ColumnListItem type="Active" id="iDtblGroceryListItem" vAlign="Middle">
+                              <cells>
+                                  <Text text="{Store}"      id="iDTXTStore"/>
+                                  <Text text="{Ingredient}" id="iDTXTIngre"/>
+                                  <VBox>
+                                  <Input
+                                    id="iDTXTRecipe"
+                                    placeholder="Enter recipe"
+                                    value="{Recipe}"
+                                    class="sapUiSmallMarginBottom">
+                                  </Input>
+                              </VBox>
+                              </cells>
+                          </ColumnListItem>
+                      </items>
+                  </Table>
+              </items>
+          </FlexBox>
+          <Panel xmlns="sap.m" width="auto" expandable="true" id="panel0" class="sapUiResponsiveMargin">
+              <headerToolbar>
+                  <Toolbar id="toolbar1">
+                      <Title text=""/>
+                      <ToolbarSpacer/>
+                      <Button icon="sap-icon://settings" visible="false"/>
+                  </Toolbar>
+              </headerToolbar>
+              <content>
+                  <Text text="Panel Content" id="text4"/>
+                  <Table noDataText="Drop column list items here and columns in the area above" 
+                          id="iDtblPastGroceryList"
+                        inset="false"
+                        items="{
+                        path: 'PGL>/PastGroceryList',
+                        sorter: {
+                          path: 'Store'
+                        }
+                      }"
+                  >
+                      <items>
+                          <ColumnListItem type="Active" id="item3">
+                              <cells>
+                                  <Text text="{PGL>Store}"      id="text5"/>
+                                  <Text text="{PGL>Ingredient}" id="text6"/>
+                                  <Text text="{PGL>Recipe}"     id="text7"/>
+                              </cells>
+                          </ColumnListItem>
+                      </items>
+                      <columns>
+                          <Column id="colHeader1">
+                              <header>
+                                  <Label text="Header 1" id="header1"/>
+                              </header>
+                          </Column>
+                          <Column id="colHeader2">
+                              <header>
+                                  <Label text="Header 2" id="header2"/>
+                              </header>
+                          </Column>
+                          <Column id="colHeader3">
+                              <header>
+                                  <Label text="Header 3" id="header3"/>
+                              </header>
+                          </Column>
+                      </columns>
+                  </Table>
+              </content>
+          </Panel>
+      </items>
+  </FlexBox>
+</mvc:View>
+</script>

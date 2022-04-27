@@ -37,11 +37,8 @@ function fileRead(pFileId) {
 
 
 function prepareDataForHTML(pTemplate) {
-  let xmlViewsFromGS = getRangeData("XML Views", "B2:B", "", true);
-
   pTemplate.appTitle       = "My Title";  // use this technique to pass variables from Server side to CLient side
   pTemplate.splashMessage  = "Loading UI5 framework... This could take up to 1-2 mins to finish.";
-  pTemplate.xmlViewsFromGS = xmlViewsFromGS;
   return pTemplate;
 }
 
@@ -138,9 +135,11 @@ function appendGroceryToSheet(pSheet, pDataArray) {
   
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
-    oResult.push({ "Store"      : oData[i][0],
+    oResult.push({ "chkGrocery" : false,
+                   "Store"      : oData[i][0],
                    "Ingredient" : oData[i][1],
-                   "Recipe"     : oData[i][2]
+                   "Recipe"     : oData[i][2],
+                   "rowNo"      : i + 1
                 });
   }
   return oResult;
@@ -165,9 +164,11 @@ function retrieveGrocery(pSheet) {
     if ( oData[i][0] != "" ||
          oData[i][1] != "" || 
          oData[i][2] != "" ) {
-      oResult.push({ "Store"      : oData[i][0],
+      oResult.push({ "chkGrocery" : false,
+                     "Store"      : oData[i][0],
                      "Ingredient" : oData[i][1],
-                     "Recipe"     : oData[i][2]
+                     "Recipe"     : oData[i][2],
+                     "rowNo"      : i + 1
                   });
     }
   }

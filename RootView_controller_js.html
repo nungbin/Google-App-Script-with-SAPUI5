@@ -1,123 +1,100 @@
 <script>
-  function rootViewInit(pView) {
-      let oModel = new sap.ui.model.json.JSONModel();
-      let oInitData = initData();
-      oModel.setData(oInitData);
-      pView.setModel(oModel);
-      // sap.ui.getCore().setModel(oModel);
+  // Controller definition
+  sap.ui.define([
+    'jquery.sap.global',
+    'sap/ui/core/mvc/Controller',
+    'sap/ui/model/Filter',
+    'sap/ui/model/json/JSONModel'
+  ], function(jQuery, Controller, Filter, JSONModel) {
+    "use strict";
 
-      // Ensure the loading sequence of all views
-      const results = Promise.all([ getRangeData("Store", "A2:A", "", true),
-                                    retrieveGrocery("Result")
-      ])
-      .then(function(res) {
-        //res will be an array
-        console.log(res);
+    return Controller.extend("myView.Template", {
+      onInit: function(oEvent) {
+        // Ensure the loading sequence of all views
+        var that = this;
+        const results = Promise.all([ getRangeData("Store", "A2:A", "", true),
+                                      retrieveGrocery("Result")
+        ])
+        .then(function(res) {
+          //res will be an array
+          console.log(res);
+          let oModel = new sap.ui.model.json.JSONModel();
+          let oInitData = initData();
 
-        let t = [];
+          let t = [];
 
-        for (var i = 0; i < res[0].length; i++){
-            t.push({ "key" : i,
-                     "text": res[0][i]
-                   });
-        }        
+          for (var i = 0; i < res[0].length; i++){
+              t.push({ "key" : i,
+                      "text": res[0][i]
+                    });
+          }        
 
-        oInitData.TopFlexBoxBusy = false;
-        oInitData.DDStore = t;
-        oInitData.GroceryList = res[1];
-        oModel.setData(oInitData);
-        pView.setModel(oModel);        
-      }).catch(function(msg) {
-        console.log(msg);
-      });
+          oInitData.TopFlexBoxBusy = false;
+          oInitData.DDStore = t;
+          oInitData.GroceryList = res[1];
+          oModel.setData(oInitData);
+          that.getView().setModel(oModel);     
+        }).catch(function(msg) {
+          console.log(msg);
+        });
+      },
 
+      storeComboChange: function(oEvent) {
+        const oView = this.getView();
+        oView.getModel().setProperty("/TopFlexBoxBusy", true);
 
+        let keyStore = oView.byId("idDDStore").getSelectedKey();
+        let keyItem  = oView.byId("idDDStore").getSelectedItem();
+        const lStore = keyItem.getBindingContext().getObject().text;
 
+        //console.log(keyItem.getBindingContext().getObject().key);
+        //console.log(keyItem.getBindingContext().getObject().text);
+        getIngridentsPerStore(lStore).then((res) => {
+          oView.byId("idDDIngre").clearSelection();
 
+          let t   = [];
+          for (var i = 0; i < res.length; i++){
+              t.push({ "key" : i,
+                      "text": res[i]
+                    });
+          }
+          oView.getModel().setProperty("/DDIngre", t);
+          oView.getModel().setProperty("/TopFlexBoxBusy", false);
+        })  
+      },
 
+      btnAdd: function(oEvent) {
+        const oView = this.getView();
+        let keyStore = oView.byId("idDDStore").getSelectedKey(),
+            keyIngre = oView.byId("idDDIngre").getSelectedKey()
 
-      // Finally got it working of using Model name reference
-      let oModel_1 = new sap.ui.model.json.JSONModel();
-      let t = { PastGroceryList: [] };
-      t.PastGroceryList.push({
-        "Store":      "S1",
-        "Ingredient": "I1",
-        "Recipe":     "R1"
-      })
-      oModel_1.setData(t);
-      pView.byId("iDtblPastGroceryList").setModel(oModel_1, "PGL");
-      //console.log(pView.byId("iDtblPastGroceryList"));
-  }
+        if ( keyStore === "" || keyStore === " " ) {
+          sap.m.MessageToast.show("Please select a store!");
+          return;
+        }
+        if ( keyIngre === "" || keyIngre === " " ) {
+          sap.m.MessageToast.show("Please select an ingredient!");
+          return;
+        }
 
-  
-  function root_btnAdd() {
-    let oView    = window.rootView;
-    let keyStore = oView.byId("idDDStore").getSelectedKey(),
-        keyIngre = oView.byId("idDDIngre").getSelectedKey()
+        oView.getModel().setProperty("/TopFlexBoxBusy", true);
+        
+        let arrayGrocery = [];
+        const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
+        const sIngre = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
+        arrayGrocery.push(sStore);
+        arrayGrocery.push(sIngre);
+        arrayGrocery.push("");
+        appendGroceryToSheet("Result", arrayGrocery).then((res) => {
+          const t = oView.getModel().getProperty("/GroceryList");
+          oView.getModel().setProperty("/GroceryList", res);
+          oView.getModel().setProperty("/TopFlexBoxBusy", false);
+        })
+      },
 
-    if ( keyStore === "" || keyStore === " " ) {
-      sap.m.MessageToast.show("Please select a store!");
-      return;
-    }
-    if ( keyIngre === "" || keyIngre === " " ) {
-      sap.m.MessageToast.show("Please select an ingredient!");
-      return;
-    }
+      onSelectionChange: function(oEvent) {
 
-    oView.getModel().setProperty("/TopFlexBoxBusy", true);
-    
-    let arrayGrocery = [];
-    const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
-    const sIngre = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
-    arrayGrocery.push(sStore);
-    arrayGrocery.push(sIngre);
-    arrayGrocery.push("");
-    appendGroceryToSheet("Result", arrayGrocery).then((res) => {
-      console.log(res);
-
-      const t = oView.getModel().getProperty("/GroceryList");
-      oView.getModel().setProperty("/GroceryList", res);
-      oView.getModel().setProperty("/TopFlexBoxBusy", false);
-    })
-    //t.push({ "chkGrocery"  : false,
-    //         "Store"       : sStore,
-    //         "Ingredient"  : sIngre,
-    //         "Recipe"      : ""
-    //      });
-  }
-
-
-  function root_storeComboChange() {
-    let oView    = window.rootView;
-
-    //oView.byId("idDDStore").setEnabled(false);
-    //oView.byId("idDDStore").setBusy(true);
-    //oView.byId("idDDIngre").setEnabled(false);
-    //oView.byId("idDDIngre").setBusy(true);
-    oView.getModel().setProperty("/TopFlexBoxBusy", true);
-
-    let keyStore = oView.byId("idDDStore").getSelectedKey();
-    let keyItem  = oView.byId("idDDStore").getSelectedItem();
-    const lStore = keyItem.getBindingContext().getObject().text;
-
-    //console.log(keyItem.getBindingContext().getObject().key);
-    //console.log(keyItem.getBindingContext().getObject().text);
-    getIngridentsPerStore(lStore).then((res) => {
-      oView.byId("idDDIngre").clearSelection();
-
-      let t   = [];
-      for (var i = 0; i < res.length; i++){
-          t.push({ "key" : i,
-                   "text": res[i]
-                });
       }
-      oView.getModel().setProperty("/DDIngre", t);
-
-      //oView.byId("idDDStore").setEnabled(true);
-      //oView.byId("idDDStore").setBusy(false);
-      //oView.byId("idDDIngre").setEnabled(true);
-      //oView.byId("idDDIngre").setBusy(false);
-      oView.getModel().setProperty("/TopFlexBoxBusy", false);
-    })
-  }
+    });
+  });
 </script>
