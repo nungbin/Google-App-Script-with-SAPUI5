@@ -62,4 +62,22 @@
       }).retrieveGrocery(pSheet);
     })
   }
+
+
+  function insertOneRowInGroceryHistory(pSheet, pRowIndex) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).insertOneRowInGroceryHistory(pSheet, pRowIndex);
+    })
+  }
+
+
+  function retrieveGroceryHistory(pSheet) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).retrieveGroceryHistory(pSheet);
+    })
+  }
 </script>

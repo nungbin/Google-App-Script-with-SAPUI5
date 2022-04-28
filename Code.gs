@@ -164,7 +164,46 @@ function retrieveGrocery(pSheet) {
     if ( oData[i][0] != "" ||
          oData[i][1] != "" || 
          oData[i][2] != "" ) {
-      oResult.push({ "chkGrocery" : false,
+      oResult.push({ 
+                     "Store"      : oData[i][0],
+                     "Ingredient" : oData[i][1],
+                     "Recipe"     : oData[i][2],
+                     "rowNo"      : i + 1
+                  });
+    }
+  }
+  Logger.log(oResult);
+  return oResult;  
+}
+
+
+function insertOneRowInGroceryHistory(pSheet, pRowIndex) {
+  const lSheet = pSheet || "Grocery History";
+  const lRowIndex = pRowIndex || 2;
+  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
+  oSheet.insertRows(lRowIndex, 1);
+}
+
+
+function retrieveGroceryHistory(pSheet) {
+  const sRange = "A1:C";
+  const lSheet = pSheet || "Grocery History";
+
+  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
+  const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
+  const oData    = oSheet.getRange(sRange + lLastRow).getValues();
+  
+  let oResult = [];
+  for ( i=1 ; i<oData.length ; i++ ) {
+    if ( oData[i][0] === "" &&
+         oData[i][1] === "" && 
+         oData[i][2] === "" ) {
+      break;
+    }
+    if ( oData[i][0] != "" ||
+         oData[i][1] != "" || 
+         oData[i][2] != "" ) {
+      oResult.push({ 
                      "Store"      : oData[i][0],
                      "Ingredient" : oData[i][1],
                      "Recipe"     : oData[i][2],

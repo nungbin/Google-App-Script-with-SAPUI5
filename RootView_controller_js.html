@@ -13,7 +13,8 @@
         // Ensure the loading sequence of all views
         var that = this;
         const results = Promise.all([ getRangeData("Store", "A2:A", "", true),
-                                      retrieveGrocery("Result")
+                                      retrieveGrocery("Result"),
+                                      retrieveGroceryHistory("Grocery History")
         ])
         .then(function(res) {
           //res will be an array
@@ -38,12 +39,13 @@
           // Finally got it working of using Model name reference
           let oModel_1 = new sap.ui.model.json.JSONModel();
           t = [];
-          t = { PastGroceryList: [] };
-          t.PastGroceryList.push({
-            "Store":      "S1",
-            "Ingredient": "I1",
-            "Recipe":     "R1"
-          })
+          t = { PastGroceryList: res[2] };
+          //t.PastGroceryList.push({
+          //  "Store":      "S1",
+          //  "Ingredient": "I1",
+          //  "Recipe":     "R1"
+          //})
+          console.log(t);
           oModel_1.setData(t);
           that.getView().byId("iDtblPastGroceryList").setModel(oModel_1, "PGL");          
 
@@ -114,9 +116,11 @@
 
       onSelectedGrocery: function(oEvent) {
           // learned from https://plnkr.co/edit/mNxnG4CnxmzjkCGKkDEw?p=preview&preview
-          var oSelectedItem = oEvent.getParameter("listItem");
-          var oModel = oSelectedItem.getBindingContext().getObject();
-          alert(JSON.stringify(oModel));
+          const oSelectedItem = oEvent.getParameter("listItem");
+          let oModel = oSelectedItem.getBindingContext().getObject();
+          debugger;
+          //alert(JSON.stringify(oModel));
+          
       }
     });
   });

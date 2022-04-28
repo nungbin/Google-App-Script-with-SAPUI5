@@ -69,7 +69,7 @@
                                   <Label text="Ingredient" id="label2"/>
                               </header>
                           </Column>
-                          <Column id="column3" width="100%">
+                          <Column id="column3" width="100%" demandPopin="true">
                               <header>
                                   <Label text="Note/Recipe" id="label3"/>
                               </header>
@@ -85,14 +85,14 @@
                                   <Text text="{Store}"      id="iDTXTStore"/>
                                   <Text text="{Ingredient}" id="iDTXTIngre"/>
                                   <VBox>
-                                  <Input
-                                    id="iDTXTRecipe"
-                                    placeholder="Enter recipe"
-                                    value="{Recipe}"
-                                    editable="false"
-                                    class="sapUiSmallMarginBottom">
-                                  </Input>
-                              </VBox>
+                                    <Input
+                                      id="iDTXTRecipe"
+                                      placeholder="Enter recipe"
+                                      value="{Recipe}"
+                                      editable="false"
+                                      class="sapUiSmallMarginBottom">
+                                    </Input>
+                                  </VBox>
                               </cells>
                           </ColumnListItem>
                       </items>
@@ -119,6 +119,23 @@
                         }
                       }"
                   >
+                      <columns>
+                          <Column id="colHeader1">
+                              <header>
+                                  <Label text="Store" id="header1"/>
+                              </header>
+                          </Column>
+                          <Column id="colHeader2">
+                              <header>
+                                  <Label text="Ingredient" id="header2"/>
+                              </header>
+                          </Column>
+                          <Column id="colHeader3">
+                              <header>
+                                  <Label text="Note/Recipe" id="header3"/>
+                              </header>
+                          </Column>
+                      </columns>
                       <items>
                           <ColumnListItem type="Active" id="item3">
                               <cells>
@@ -128,23 +145,7 @@
                               </cells>
                           </ColumnListItem>
                       </items>
-                      <columns>
-                          <Column id="colHeader1">
-                              <header>
-                                  <Label text="Header 1" id="header1"/>
-                              </header>
-                          </Column>
-                          <Column id="colHeader2">
-                              <header>
-                                  <Label text="Header 2" id="header2"/>
-                              </header>
-                          </Column>
-                          <Column id="colHeader3">
-                              <header>
-                                  <Label text="Header 3" id="header3"/>
-                              </header>
-                          </Column>
-                      </columns>
+
                   </Table>
               </content>
           </Panel>
