@@ -39,7 +39,7 @@
                   </FlexBox>
                   <FlexBox width="100%" id="box5" alignItems="End">
                       <items>
-                          <Button xmlns="sap.m" text="Add" id="idBTNAdd" class="sapUiSmallMargin" press=".onBtnAdd"/>
+                          <Button text="Add" id="idBTNAdd" class="sapUiSmallMargin" press=".onBtnAdd"/>
                       </items>
                   </FlexBox>
               </items>
@@ -109,16 +109,24 @@
               </headerToolbar>
               <content>
                   <Text text="" id="text4"/>
-                  <Table noDataText="Drop column list items here and columns in the area above" 
-                          id="iDtblPastGroceryList"
-                        inset="false"
-                        items="{
-                        path: 'PGL>/PastGroceryList',
-                        sorter: {
-                          path: 'Store'
-                        }
-                      }"
+                  <Table noDataText="Select a grocery item above to complete grocery purchase!" 
+                         id="iDtblPastGroceryList"
+                         inset="false"
+                         mode="MultiSelect"
+                         items="{
+                           path: 'PGL>/PastGroceryList'
+                         }"
                   >
+                      <headerToolbar>
+                        <OverflowToolbar>
+                          <content>
+                            <Button text="Add selected back to Grocery List" 
+                                    id="idBTNAddBack" 
+                                    class="sapUiSmallMargin" 
+                                    press=".onBtnAddBack"/>
+                          </content>
+                        </OverflowToolbar>
+                      </headerToolbar>
                       <columns>
                           <Column id="colHeader1">
                               <header>

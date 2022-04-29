@@ -12,8 +12,9 @@
       onInit: function(oEvent) {
         // Ensure the loading sequence of all views
         var that = this;
+        
         const results = Promise.all([ getRangeData("Store", "A2:A", "", true),
-                                      retrieveGrocery("Result"),
+                                      retrieveGrocery("Grocery"),
                                       retrieveGroceryHistory("Grocery History")
         ])
         .then(function(res) {
@@ -29,12 +30,11 @@
                     });
           }        
 
-          oInitData.TopFlexBoxBusy = false;
+          //oInitData.TopFlexBoxBusy = false;
           oInitData.DDStore = t;
           oInitData.GroceryList = res[1];
           oModel.setData(oInitData);
           that.getView().setModel(oModel);          
-
 
           // Finally got it working of using Model name reference
           let oModel_1 = new sap.ui.model.json.JSONModel();
@@ -45,10 +45,10 @@
           //  "Ingredient": "I1",
           //  "Recipe":     "R1"
           //})
-          console.log(t);
           oModel_1.setData(t);
           that.getView().byId("iDtblPastGroceryList").setModel(oModel_1, "PGL");          
 
+          that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
 
         }).catch(function(msg) {
           console.log(msg);
@@ -101,7 +101,7 @@
         arrayGrocery.push(sStore);
         arrayGrocery.push(sIngre);
         arrayGrocery.push("");
-        appendGroceryToSheet("Result", arrayGrocery).then((res) => {
+        appendGroceryToSheet("Grocery", arrayGrocery).then((res) => {
           const t = oView.getModel().getProperty("/GroceryList");
           oView.getModel().setProperty("/GroceryList", res);
           oView.byId("idDDIngre").clearSelection();
@@ -117,10 +117,29 @@
       onSelectedGrocery: function(oEvent) {
           // learned from https://plnkr.co/edit/mNxnG4CnxmzjkCGKkDEw?p=preview&preview
           const oSelectedItem = oEvent.getParameter("listItem");
-          let oModel = oSelectedItem.getBindingContext().getObject();
-          debugger;
-          //alert(JSON.stringify(oModel));
-          
+          const oModel = oSelectedItem.getBindingContext().getObject();
+          var that = this;
+          that.getView().getModel().setProperty("/TopFlexBoxBusy", true);
+
+          console.log(oModel);
+          moveGroceryToHistory("Grocery", oModel.rowNo, "Grocery History", 2).then(function(res) {
+
+            const results = Promise.all([ 
+                                          retrieveGrocery("Grocery"),
+                                          retrieveGroceryHistory("Grocery History")
+            ])
+            .then(function(res) {
+              console.log(res);      
+              that.getView().getModel().setProperty("/GroceryList", res[0]);
+              that.getView().byId("iDtblPastGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
+
+              that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
+
+            }).catch(function(msg) {
+              console.log(msg);
+            });
+
+          })
       }
     });
   });

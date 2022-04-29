@@ -80,4 +80,13 @@
       }).retrieveGroceryHistory(pSheet);
     })
   }
+
+
+  function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowToInsert) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowToInsert);
+    })
+  }
 </script>

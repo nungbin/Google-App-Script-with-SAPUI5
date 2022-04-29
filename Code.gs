@@ -119,7 +119,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
   const sRange = "A1:C";
   let lDate = new Date();
 
-  const lSheet = pSheet || "Result";
+  const lSheet = pSheet || "Grocery";
   //pDataArray = [];
   //pDataArray.push("1");
   //pDataArray.push("2");
@@ -148,7 +148,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
 
 function retrieveGrocery(pSheet) {
   const sRange = "A1:C";
-  const lSheet = pSheet || "Result";
+  const lSheet = pSheet || "Grocery";
 
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
   const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
@@ -213,4 +213,20 @@ function retrieveGroceryHistory(pSheet) {
   }
   Logger.log(oResult);
   return oResult;  
+}
+
+
+function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowToInsert) {
+  const lDate = new Date();
+  const lGrocerySheet = pGrocerySheet || "Grocery";
+  const lHistorySheet = pHistorySheet || "Grocery History";
+  const lRowToDelete  = pRowToDelete || 2; 
+  const lRowtoInsert  = pRowToInsert || 2;
+  const sGrocerySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lGrocerySheet);
+  const sHistorySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lHistorySheet);
+  sHistorySheet.insertRowBefore(lRowtoInsert);
+  sGrocerySheet.getRange("A" + lRowToDelete + ":E" + lRowToDelete).copyTo(sHistorySheet.getRange("A" + lRowtoInsert + ":E" + lRowtoInsert), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
+  sHistorySheet.getRange("F" + lRowtoInsert).setValue(Session.getActiveUser().getEmail());
+  sHistorySheet.getRange("G" + lRowtoInsert).setValue(lDate.toLocaleString());
+  sGrocerySheet.deleteRow(lRowToDelete);
 }
