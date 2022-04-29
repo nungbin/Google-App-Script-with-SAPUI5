@@ -11,6 +11,8 @@
     Passing variables from server-side script
     https://stackoverflow.com/questions/66897542/trouble-passing-a-variable-to-html-from-google-apps-script-and-then-back-to-gs-a
   -->
+  <?!= include('loader_css'); ?>
+  <div id="load_screen" class="loader"><?= splashMessage ?></div>
 
   <!-- Start loading Open UI5 framework -->
   <?!= include('load_sapui5_framework'); ?>

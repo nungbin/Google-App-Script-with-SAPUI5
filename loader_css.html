@@ -1,0 +1,23 @@
+<style>
+  .loader {
+    font-size:       20px;
+    color:           palevioletred;
+    text-align:      center;
+    justify-content: center;
+  }
+
+  .loader::after {
+    content: '\2026';
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    animation: dots steps(4, end) 2s infinite;
+  }
+
+  @keyframes dots {
+    to {
+      width: 1.25em;
+    }
+  }
+</style>
+
