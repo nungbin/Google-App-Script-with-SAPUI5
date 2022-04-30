@@ -80,6 +80,14 @@ function getRangeData(pSheet, pRange, pFieldName, pLastRow) {
 }
 
 
+// https://gist.github.com/clayperez/0d689b02693b2e94a7d1ddea98a0571c?permalink_comment_id=3579624#gistcomment-3579624
+function uniqueId() {
+  const uID = Utilities.getUuid();
+  Logger.log(uID);
+  return uID;
+}
+
+
 function getIngredientsPerStore(pStore) {
   const text = pStore || "Superstore";
   const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Ingredient Database").createTextFinder(text);
@@ -116,7 +124,7 @@ function getIngredientsPerStore(pStore) {
 
 
 function appendGroceryToSheet(pSheet, pDataArray) {
-  const sRange = "A1:C";
+  const sRange = "A1:D";
   let lDate = new Date();
 
   const lSheet = pSheet || "Grocery";
@@ -124,6 +132,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
   //pDataArray.push("1");
   //pDataArray.push("2");
   //pDataArray.push("3");
+  pDataArray.push(uniqueId());
   pDataArray.push(Session.getActiveUser().getEmail());
   pDataArray.push(lDate.toLocaleString());
   
@@ -135,10 +144,11 @@ function appendGroceryToSheet(pSheet, pDataArray) {
   
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
-    oResult.push({ "chkGrocery" : false,
+    oResult.push({ 
                    "Store"      : oData[i][0],
                    "Ingredient" : oData[i][1],
                    "Recipe"     : oData[i][2],
+                   "UID"        : oData[i][3],
                    "rowNo"      : i + 1
                 });
   }
@@ -147,7 +157,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
 
 
 function retrieveGrocery(pSheet) {
-  const sRange = "A1:C";
+  const sRange = "A1:D";
   const lSheet = pSheet || "Grocery";
 
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
@@ -161,13 +171,14 @@ function retrieveGrocery(pSheet) {
          oData[i][2] === "" ) {
       break;
     }
-    if ( oData[i][0] != "" ||
-         oData[i][1] != "" || 
-         oData[i][2] != "" ) {
+    if ( oData[i][0] !== "" ||
+         oData[i][1] !== "" || 
+         oData[i][2] !== "" ) {
       oResult.push({ 
                      "Store"      : oData[i][0],
                      "Ingredient" : oData[i][1],
                      "Recipe"     : oData[i][2],
+                     "UID"        : oData[i][3],
                      "rowNo"      : i + 1
                   });
     }
@@ -177,16 +188,17 @@ function retrieveGrocery(pSheet) {
 }
 
 
-function insertOneRowInGroceryHistory(pSheet, pRowIndex) {
-  const lSheet = pSheet || "Grocery History";
-  const lRowIndex = pRowIndex || 2;
-  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
-  oSheet.insertRows(lRowIndex, 1);
-}
+//function insertOneRowInGroceryHistory(pSheet, pRowIndex) {
+//  const lSheet = pSheet || "Grocery History";
+//  const lRowIndex = pRowIndex || 2;
+//  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
+//  oSheet.insertRows(lRowIndex, 1);
+//}
 
 
 function retrieveGroceryHistory(pSheet) {
-  const sRange = "A1:C";
+  const listLimit = 20;
+  const sRange = "A1:D";
   const lSheet = pSheet || "Grocery History";
 
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
@@ -200,6 +212,10 @@ function retrieveGroceryHistory(pSheet) {
          oData[i][2] === "" ) {
       break;
     }
+    if ( i > listLimit ) {
+      // only retrieve listLimit number of items
+      break;
+    }
     if ( oData[i][0] != "" ||
          oData[i][1] != "" || 
          oData[i][2] != "" ) {
@@ -207,11 +223,11 @@ function retrieveGroceryHistory(pSheet) {
                      "Store"      : oData[i][0],
                      "Ingredient" : oData[i][1],
                      "Recipe"     : oData[i][2],
+                     "UID"        : oData[i][3],
                      "rowNo"      : i + 1
                   });
     }
   }
-  Logger.log(oResult);
   return oResult;  
 }
 
@@ -225,8 +241,8 @@ function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowTo
   const sGrocerySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lGrocerySheet);
   const sHistorySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lHistorySheet);
   sHistorySheet.insertRowBefore(lRowtoInsert);
-  sGrocerySheet.getRange("A" + lRowToDelete + ":E" + lRowToDelete).copyTo(sHistorySheet.getRange("A" + lRowtoInsert + ":E" + lRowtoInsert), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
-  sHistorySheet.getRange("F" + lRowtoInsert).setValue(Session.getActiveUser().getEmail());
-  sHistorySheet.getRange("G" + lRowtoInsert).setValue(lDate.toLocaleString());
+  sGrocerySheet.getRange("A" + lRowToDelete + ":F" + lRowToDelete).copyTo(sHistorySheet.getRange("A" + lRowtoInsert + ":F" + lRowtoInsert), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
+  sHistorySheet.getRange("G" + lRowtoInsert).setValue(Session.getActiveUser().getEmail());
+  sHistorySheet.getRange("H" + lRowtoInsert).setValue(lDate.toLocaleString());
   sGrocerySheet.deleteRow(lRowToDelete);
 }

@@ -21,5 +21,3 @@ function custConcat(...args) {
   })
   return resultStr;
 }
-
-

@@ -105,6 +105,7 @@
           const t = oView.getModel().getProperty("/GroceryList");
           oView.getModel().setProperty("/GroceryList", res);
           oView.byId("idDDIngre").clearSelection();
+          oView.byId("iDtblGroceryList").removeSelections(true);
           oView.getModel().setProperty("/TopFlexBoxBusy", false);
         })
       },
@@ -119,21 +120,21 @@
           const oSelectedItem = oEvent.getParameter("listItem");
           const oModel = oSelectedItem.getBindingContext().getObject();
           var that = this;
-          that.getView().getModel().setProperty("/TopFlexBoxBusy", true);
+          //that.getView().getModel().setProperty("/TopFlexBoxBusy", true);
+          const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Moving selected grocery to History..."});
+          oGlobalBusyDialog.open();
 
-          console.log(oModel);
           moveGroceryToHistory("Grocery", oModel.rowNo, "Grocery History", 2).then(function(res) {
-
             const results = Promise.all([ 
                                           retrieveGrocery("Grocery"),
                                           retrieveGroceryHistory("Grocery History")
             ])
-            .then(function(res) {
-              console.log(res);      
+            .then(function(res) {     
               that.getView().getModel().setProperty("/GroceryList", res[0]);
               that.getView().byId("iDtblPastGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
 
-              that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
+              //that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
+              oGlobalBusyDialog.close();
 
             }).catch(function(msg) {
               console.log(msg);
