@@ -1,11 +1,13 @@
 <script>
   // Controller definition
   sap.ui.define([
-    'jquery.sap.global',
-    'sap/ui/core/mvc/Controller',
-    'sap/ui/model/Filter',
-    'sap/ui/model/json/JSONModel'
-  ], function(jQuery, Controller, Filter, JSONModel) {
+    "jquery.sap.global",
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/model/Filter",
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast",
+  ], function(jQuery, Controller, Filter, JSONModel, MessageBox, MessageToast) {
     "use strict";
 
     return Controller.extend("root.Controller", {
@@ -46,7 +48,7 @@
           //  "Recipe":     "R1"
           //})
           oModel_1.setData(t);
-          that.getView().byId("iDtblPastGroceryList").setModel(oModel_1, "PGL");          
+          that.getView().byId("iDtblHistoryGroceryList").setModel(oModel_1, "PGL");          
 
           that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
 
@@ -110,6 +112,53 @@
         })
       },
 
+      // https://plnkr.co/edit/FCrGwsBM4K0E16XFEOEc?p=preview&preview
+      onBtnAddBack: function(oEvent) {
+        var that = this;
+        const sTitle="Confirmation";
+        MessageBox.show("Are you sure moving selected grocery back to Grocery?", {
+          icon: MessageBox.Icon.QUESTION,
+          title: sTitle ,
+          actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+          emphasizedAction: MessageBox.Action.NO,
+          onClose: function (oAction) {
+            if (oAction === 'YES') {
+              const oTable = that.getView().byId("iDtblHistoryGroceryList");
+              const idx = oTable.indexOfItem(oTable.getSelectedItem());
+              if (idx !== -1) {
+                var arrayRowNo = [];
+                const oItems = oTable.getSelectedItems();
+
+                for (let i=0 ; i<oItems.length ; i++) {
+                  arrayRowNo.push(oItems[i].getBindingContext("PGL").getObject().rowNo);
+                }
+                const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Moving selected grocery back to Grocery..."});
+                oGlobalBusyDialog.open();
+
+                moveHistoryToGrocery("Grocery History", arrayRowNo, "Grocery").then(function(res) {
+                  const results = Promise.all([ 
+                                                retrieveGrocery("Grocery"),
+                                                retrieveGroceryHistory("Grocery History")
+                  ])
+                  .then(function(res) {     
+                    that.getView().getModel().setProperty("/GroceryList", res[0]);
+                    that.getView().byId("iDtblHistoryGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
+
+                    oView.byId("iDtblHistoryGroceryList").removeSelections(true);
+                    oView.byId("panelHistory").setExpanded(false);
+                    oGlobalBusyDialog.close();
+
+                  }).catch(function(msg) {
+                    console.log(msg);
+                  });
+                })      
+              }
+
+            }
+          }
+        });
+      },
+
       onGroceryItemEdit: function(oEvent) {
         // learned from https://plnkr.co/edit/qifky6plPEzFtlpyV2vb?p=preview&preview
         console.log("onGroceryItemEdit event triggered!!!")
@@ -131,7 +180,7 @@
             ])
             .then(function(res) {     
               that.getView().getModel().setProperty("/GroceryList", res[0]);
-              that.getView().byId("iDtblPastGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
+              that.getView().byId("iDtblHistoryGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
 
               //that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
               oGlobalBusyDialog.close();

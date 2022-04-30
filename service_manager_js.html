@@ -89,4 +89,13 @@
       }).moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowToInsert);
     })
   }
+
+
+  function moveHistoryToGrocery(pHistorySheet, pRowsArray, pGrocerySheet) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).moveHistoryToGrocery(pHistorySheet, pRowsArray, pGrocerySheet);      
+    })
+  }
 </script>

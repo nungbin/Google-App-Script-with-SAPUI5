@@ -246,3 +246,23 @@ function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowTo
   sHistorySheet.getRange("H" + lRowtoInsert).setValue(lDate.toLocaleString());
   sGrocerySheet.deleteRow(lRowToDelete);
 }
+
+
+function moveHistoryToGrocery(pHistorySheet, pRowsArray, pGrocerySheet) {
+  //pRowsArray = [];
+  //pRowsArray.push(2);
+  //pRowsArray.push(3);
+
+  const lDate = new Date();
+  const lGrocerySheet = pGrocerySheet || "Grocery";
+  const lHistorySheet = pHistorySheet || "Grocery History";
+  //const sGrocerySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lGrocerySheet);
+  const sHistorySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lHistorySheet);
+  pRowsArray.forEach((row) => {
+    let rowData=[];
+    rowData.push(sHistorySheet.getRange("A"+row).getValue());
+    rowData.push(sHistorySheet.getRange("B"+row).getValue());
+    rowData.push(sHistorySheet.getRange("C"+row).getValue());
+    appendGroceryToSheet(lGrocerySheet, rowData);
+  })
+}

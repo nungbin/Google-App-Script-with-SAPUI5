@@ -99,7 +99,7 @@
                   </Table>
               </items>
           </FlexBox>
-          <Panel xmlns="sap.m" width="auto" expandable="true" id="panel0" class="sapUiResponsiveMargin">
+          <Panel xmlns="sap.m" width="auto" expandable="true" id="panelHistory" class="sapUiResponsiveMargin">
               <headerToolbar>
                   <Toolbar id="toolbar1">
                       <Title text="Grocery History"/>
@@ -108,9 +108,8 @@
                   </Toolbar>
               </headerToolbar>
               <content>
-                  <Text text="" id="text4"/>
                   <Table noDataText="Select a grocery item above to complete grocery purchase!" 
-                         id="iDtblPastGroceryList"
+                         id="iDtblHistoryGroceryList"
                          inset="false"
                          mode="MultiSelect"
                          items="{
