@@ -103,7 +103,7 @@ function getIngredientsPerStore(pStore) {
     break;
   }
   
-  if ( matchedValue != "" ) {
+  if ( matchedValue !== "" ) {
     const sSheetName = "Ingredient Database";
     const rRange     = "A2:H";
     let lSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sSheetName );
@@ -120,6 +120,38 @@ function getIngredientsPerStore(pStore) {
   }
   Logger.log(matched);
   return matched;
+}
+
+
+function insertIngredientToDatabase(pStore, pIngredient) {
+  let arrayIngredient=[],
+      matchedValue,
+      matchedColumn=0;
+  let lStore      = pStore || 'Costco';
+  let lIngredient = pIngredient || 'test';
+  const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Ingredient Database").createTextFinder(lStore);
+  textFinder.matchCase(false);
+  const arrayMatch = textFinder.findAll();
+  for (const i=0 ; i<arrayMatch.length ; i++) {
+    matchedValue  = arrayMatch[i].getValue();
+    matchedColumn = arrayMatch[i].getColumn();
+    break;
+  }
+  if ( matchedColumn > 0 ) {
+    const sSheetName = "Ingredient Database";
+    const rRange     = "B2:B";
+    let lSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sSheetName );
+    let lLastRow = lSheet.getRange(rRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
+    lLastRow++;
+    lSheet.getRange(lLastRow, 1).setFormula("=custConcat(B"+ lLastRow + ", C" + lLastRow + ", D" + lLastRow + ")");
+    lSheet.getRange(lLastRow, 2).setValue(lIngredient);
+    lSheet.getRange(lLastRow, matchedColumn).setValue('x');
+    arrayIngredient.push(lIngredient);
+
+    Logger.log(lLastRow);
+    Logger.log(matchedColumn);
+  }
+  return arrayIngredient;
 }
 
 

@@ -98,4 +98,13 @@
       }).moveHistoryToGrocery(pHistorySheet, pRowsArray, pGrocerySheet);      
     })
   }
+
+
+  function insertIngredientToDatabase(pStore, pIngredient) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).insertIngredientToDatabase(pStore, pIngredient);      
+    })    
+  }
 </script>

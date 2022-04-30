@@ -65,15 +65,13 @@
         let keyItem  = oView.byId("idDDStore").getSelectedItem();
         const lStore = keyItem.getBindingContext().getObject().text;
 
-        //console.log(keyItem.getBindingContext().getObject().key);
-        //console.log(keyItem.getBindingContext().getObject().text);
         getIngridentsPerStore(lStore).then((res) => {
           oView.byId("idDDIngre").clearSelection();
 
           let t   = [];
           for (var i = 0; i < res.length; i++){
               t.push({ "key" : i,
-                      "text": res[i]
+                       "text": res[i]
                     });
           }
           oView.getModel().setProperty("/DDIngre", t);
@@ -83,23 +81,74 @@
 
       onBtnAdd: function(oEvent) {
         const oView = this.getView();
-        let keyStore = oView.byId("idDDStore").getSelectedKey(),
-            keyIngre = oView.byId("idDDIngre").getSelectedKey()
+        var   enteredingredient = oView.byId("idDDIngre").getValue();
+        const keyStore  = oView.byId("idDDStore").getSelectedKey(),
+              storeText = oView.byId("idDDStore").getSelectedItem().getText(),
+              keyIngre  = oView.byId("idDDIngre").getSelectedKey();
 
         if ( keyStore === "" || keyStore === " " ) {
           sap.m.MessageToast.show("Please select a store!");
           return;
         }
-        if ( keyIngre === "" || keyIngre === " " ) {
-          sap.m.MessageToast.show("Please select an ingredient!");
+        if ( enteredingredient === "" ) {
+          sap.m.MessageToast.show("Please enter or select an ingredient!");
           return;
         }
+        //if ( keyIngre === "" || keyIngre === " " ) { 
+        //}
+
+        // check if entered ingredient exists
+        const len     = oView.byId("idDDIngre").getItems().length;
+        let   bExists = false;
+        for (let i=0;i<len;i++) {
+          const itemText = oView.byId("idDDIngre").getItems()[i].getProperty("text");              
+          if (itemText === enteredingredient) {
+            bExists = true;
+            break;
+          }
+        }
+
+        if (!bExists) {
+          // ingredient doesn't exist in the database
+          const sTitle="Confirmation";
+          MessageBox.show( "'" + enteredingredient + "' doesn't exist in the database. Would you like to add it?", {
+            icon: MessageBox.Icon.QUESTION,
+            title: sTitle ,
+            actions: [MessageBox.Action.YES, MessageBox.Action.NO],
+            emphasizedAction: MessageBox.Action.NO,
+            onClose: function (oAction) {
+              if (oAction === 'YES') {
+                const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Adding " + enteredingredient + " to database..."});
+                oGlobalBusyDialog.open();
+
+                insertIngredientToDatabase(storeText, enteredingredient).then(function(res) {
+                  if (res.length > 0) {
+                    const t = oView.getModel().getProperty("/DDIngre");
+                    if ( t.length === 0 ) {
+                      t = [];
+                    }
+                    console.log(t);
+                    t.push({ "key" : t.length + 1,
+                             "text": enteredingredient
+                          });
+                    oView.getModel().setProperty("/DDIngre", t);
+                  }
+                  oGlobalBusyDialog.close();
+                })
+              }
+            }
+          });
+        }
+        else {
+          enteredingredient = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
+        }
+
 
         oView.getModel().setProperty("/TopFlexBoxBusy", true);
         
         let arrayGrocery = [];
         const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
-        const sIngre = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
+        const sIngre = enteredingredient;
         arrayGrocery.push(sStore);
         arrayGrocery.push(sIngre);
         arrayGrocery.push("");
