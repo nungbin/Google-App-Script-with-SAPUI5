@@ -17,6 +17,7 @@
                           <Label text="Store" width="100%" id="label0"/>
                           <ComboBox id="idDDStore" 
                                     class="sapUiSmallMarginEnd"
+                                    placeholder="Please select a store!"
                                     items="{ path: '/DDStore',                                                
                                              sorter: { path: 'text' }  
                                           }"
@@ -30,6 +31,7 @@
                           <Label text="Ingredient" width="100%" id="label1"/>
                           <ComboBox id="idDDIngre" 
                                     class="sapUiSmallMarginEnd"
+                                    placeholder="Please enter or select an ingredient!"
                                     items="{ path: '/DDIngre',                                                
                                              sorter: { path: 'text' }          
                                           }">
@@ -47,7 +49,7 @@
           <FlexBox width="100%" id="box0_1650550633501">
               <items>
                   <Table noDataText="Hit the Add button to start adding groceries..." 
-                          id="iDtblGroceryList"
+                        id="iDtblGroceryList"
                         inset="false"
                         selectionChange=".onSelectedGrocery"
                         mode="SingleSelectLeft"
@@ -60,16 +62,19 @@
                   >
                       <columns>
                           <Column id="column1" width="100%">
-                              <header>
-                                  <Label text="Store" id="label1_1650550646049"/>
-                              </header>
+                              <Text text="Store" />
                           </Column>
-                          <Column id="column2" width="100%">
+                          <Column id="column2" 
+                                  minScreenWidth="Tablet"
+				                          demandPopin="true"
+                                  width="100%">
                               <header>
                                   <Label text="Ingredient" id="label2"/>
                               </header>
                           </Column>
-                          <Column id="column3" width="100%" demandPopin="true">
+                          <Column id="column3" 
+                                  width="100%" 
+                                  >
                               <header>
                                   <Label text="Note/Recipe" id="label3"/>
                               </header>

@@ -193,6 +193,7 @@
                     that.getView().getModel().setProperty("/GroceryList", res[0]);
                     that.getView().byId("iDtblHistoryGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
 
+                    oView.byId("iDtblGroceryList").removeSelections(true);
                     oView.byId("iDtblHistoryGroceryList").removeSelections(true);
                     oView.byId("panelHistory").setExpanded(false);
                     oGlobalBusyDialog.close();
