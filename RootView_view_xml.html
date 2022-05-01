@@ -65,8 +65,6 @@
                               <Text text="Store" />
                           </Column>
                           <Column id="column2" 
-                                  minScreenWidth="Tablet"
-				                          demandPopin="true"
                                   width="100%">
                               <header>
                                   <Label text="Ingredient" id="label2"/>
@@ -79,6 +77,10 @@
                                   <Label text="Note/Recipe" id="label3"/>
                               </header>
                           </Column>
+
+                          <Column width="20%"></Column>
+                          <Column width="20%"></Column>
+
                       </columns>
                       <items>
                           <ColumnListItem type="Detail" 
@@ -89,15 +91,24 @@
                               <cells>
                                   <Text text="{Store}"      id="iDTXTStore"/>
                                   <Text text="{Ingredient}" id="iDTXTIngre"/>
-                                  <VBox>
-                                    <Input
-                                      id="iDTXTRecipe"
-                                      placeholder="Enter recipe"
-                                      value="{Recipe}"
-                                      editable="false"
-                                      class="sapUiSmallMarginBottom">
-                                    </Input>
-                                  </VBox>
+                                  <!-- controls within <HBox/> count as one column -->
+                                  <Input
+                                    id="iDTXTRecipe"
+                                    placeholder="Enter recipe"
+                                    value="{Recipe}"
+                                    editable="false"
+                                    class="sapUiSmallMarginBottom">
+                                  </Input>
+                                  <Button text="Save" 
+                                          type="Transparent" 
+                                          visible="false"
+                                          icon="sap-icon://save"
+                                          press=".onSaveRecipe"/>
+                                  <Button text="Cancel" 
+                                          type="Transparent" 
+                                          visible="false"
+                                          icon="sap-icon://cancel"
+                                          press=".onCancelRecipe"/>
                               </cells>
                           </ColumnListItem>
                       </items>
@@ -142,9 +153,20 @@
                                   <Label text="Ingredient" id="header2"/>
                               </header>
                           </Column>
-                          <Column id="colHeader3">
+                          <Column id="colHeader3"
+                                  minScreenWidth="Tablet"
+				                          demandPopin="true"
+                          >
                               <header>
                                   <Label text="Note/Recipe" id="header3"/>
+                              </header>
+                          </Column>
+                          <Column id="colHeader4"
+                                  minScreenWidth="Tablet"
+				                          demandPopin="true"
+                          >
+                              <header>
+                                  <Label text="Changed On" id="header4"/>
                               </header>
                           </Column>
                       </columns>
@@ -154,6 +176,7 @@
                                   <Text text="{PGL>Store}"      id="text5"/>
                                   <Text text="{PGL>Ingredient}" id="text6"/>
                                   <Text text="{PGL>Recipe}"     id="text7"/>
+                                  <Text text="{PGL>ChangedOn}"  id="text8" class="smallLabel"/>
                               </cells>
                           </ColumnListItem>
                       </items>

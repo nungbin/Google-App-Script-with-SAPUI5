@@ -210,8 +210,18 @@
       },
 
       onGroceryItemEdit: function(oEvent) {
-        // learned from https://plnkr.co/edit/qifky6plPEzFtlpyV2vb?p=preview&preview
-        console.log("onGroceryItemEdit event triggered!!!")
+        // learned from https://plnkr.co/edit/qifky6plPEzFtlpyV2vb?p=preview&preview  
+        const bVisible = oEvent.getSource().getDetailControl().getVisible();
+        oEvent.getSource().getDetailControl().setVisible(!bVisible);
+        
+        const oCells = oEvent.getSource().getCells();
+        oCells.forEach((oCell) => {
+          if(oCell instanceof sap.m.Input) {
+            oCell.setEditable(bVisible);
+          }else if(oCell instanceof sap.m.Button) {
+            oCell.setVisible(bVisible);                      
+          }
+        })
       },
 
       onSelectedGrocery: function(oEvent) {
@@ -240,6 +250,36 @@
             });
 
           })
+      },
+
+
+      onSaveRecipe: function(oEvent) {
+        const bVisible = oEvent.getSource().getParent().getDetailControl().getVisible();
+        oEvent.getSource().getParent().getDetailControl().setVisible(!bVisible);
+
+        const oCells = oEvent.getSource().getParent().getCells();
+        oCells.forEach((oCell) => {
+          if(oCell instanceof sap.m.Input) {
+            oCell.setEditable(bVisible);
+          }else if(oCell instanceof sap.m.Button) {
+            oCell.setVisible(bVisible);                      
+          }
+        })
+      },
+
+
+      onCancelRecipe: function(oEvent) {
+        const bVisible = oEvent.getSource().getParent().getDetailControl().getVisible();
+        oEvent.getSource().getParent().getDetailControl().setVisible(!bVisible);
+
+        const oCells = oEvent.getSource().getParent().getCells();
+        oCells.forEach((oCell) => {
+          if(oCell instanceof sap.m.Input) {
+            oCell.setEditable(bVisible);
+          }else if(oCell instanceof sap.m.Button) {
+            oCell.setVisible(bVisible);                      
+          }
+        })
       }
     });
   });

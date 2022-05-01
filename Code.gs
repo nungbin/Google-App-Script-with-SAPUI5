@@ -230,7 +230,7 @@ function retrieveGrocery(pSheet) {
 
 function retrieveGroceryHistory(pSheet) {
   const listLimit = 20;
-  const sRange = "A1:D";
+  const sRange = "A1:H";
   const lSheet = pSheet || "Grocery History";
 
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
@@ -256,6 +256,7 @@ function retrieveGroceryHistory(pSheet) {
                      "Ingredient" : oData[i][1],
                      "Recipe"     : oData[i][2],
                      "UID"        : oData[i][3],
+                     "ChangedOn"  : oData[i][7],
                      "rowNo"      : i + 1
                   });
     }
