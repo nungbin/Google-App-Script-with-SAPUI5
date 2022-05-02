@@ -211,6 +211,7 @@ function retrieveGrocery(pSheet) {
                      "Ingredient" : oData[i][1],
                      "Recipe"     : oData[i][2],
                      "UID"        : oData[i][3],
+                     "dirtyRow"   : false,
                      "rowNo"      : i + 1
                   });
     }
@@ -298,4 +299,13 @@ function moveHistoryToGrocery(pHistorySheet, pRowsArray, pGrocerySheet) {
     rowData.push(sHistorySheet.getRange("C"+row).getValue());
     appendGroceryToSheet(lGrocerySheet, rowData);
   })
+}
+
+
+function saveRecipe(pSheet, pRow, pRecipe) {
+  const lSheet  = pSheet || "Grocery";
+  const lRow    = pRow   || 2;
+  const lRecipe = pRecipe || "test";
+
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange("C" + lRow).setValue(lRecipe);
 }

@@ -212,16 +212,7 @@
       onGroceryItemEdit: function(oEvent) {
         // learned from https://plnkr.co/edit/qifky6plPEzFtlpyV2vb?p=preview&preview  
         const bVisible = oEvent.getSource().getDetailControl().getVisible();
-        oEvent.getSource().getDetailControl().setVisible(!bVisible);
-        
-        const oCells = oEvent.getSource().getCells();
-        oCells.forEach((oCell) => {
-          if(oCell instanceof sap.m.Input) {
-            oCell.setEditable(bVisible);
-          }else if(oCell instanceof sap.m.Button) {
-            oCell.setVisible(bVisible);                      
-          }
-        })
+        this.onPress(oEvent.getSource(), bVisible);
       },
 
       onSelectedGrocery: function(oEvent) {
@@ -253,34 +244,89 @@
       },
 
 
-      onSaveRecipe: function(oEvent) {
-        const bVisible = oEvent.getSource().getParent().getDetailControl().getVisible();
-        oEvent.getSource().getParent().getDetailControl().setVisible(!bVisible);
+      onRecipeChange: function(oEvent) {
+        const iRowIndex = this.getView().byId("iDtblGroceryList").indexOfItem(oEvent.getSource().getParent());
 
-        const oCells = oEvent.getSource().getParent().getCells();
-        oCells.forEach((oCell) => {
-          if(oCell instanceof sap.m.Input) {
-            oCell.setEditable(bVisible);
-          }else if(oCell instanceof sap.m.Button) {
-            oCell.setVisible(bVisible);                      
-          }
-        })
+        // Keep track of the row which has a change in it!!!
+        let oData = this.getView().getModel().getProperty("/GroceryList");
+        oData[iRowIndex].dirtyRow = true;
+        this.getView().getModel().setProperty("/GroceryList", oData);
+      },
+
+      onSaveRecipe: function(oEvent) {
+        this.setRecipeInput(oEvent, "SAVE");
       },
 
 
       onCancelRecipe: function(oEvent) {
-        const bVisible = oEvent.getSource().getParent().getDetailControl().getVisible();
-        oEvent.getSource().getParent().getDetailControl().setVisible(!bVisible);
-
-        const oCells = oEvent.getSource().getParent().getCells();
-        oCells.forEach((oCell) => {
-          if(oCell instanceof sap.m.Input) {
-            oCell.setEditable(bVisible);
-          }else if(oCell instanceof sap.m.Button) {
-            oCell.setVisible(bVisible);                      
+        var that = this;
+        const oData  = this.getView().getModel().getProperty("/GroceryList");
+        for (let i=0 ; i<oData.length ; i++) {
+          if ( oData[i].dirtyRow ) {
+            sap.m.MessageBox.confirm("Unsaved changes. Save first?", {
+              title: "Confirm",
+              onClose: function(btn) {
+                if (btn === "OK") {
+                  that.setRecipeInput(oEvent, "SAVE");
+                }              
+              }
+            });
+            break;          
           }
+        }
+        that.setRecipeInput(oEvent, "CANCEL");
+        retrieveGrocery("Grocery").then(function(res) {
+          console.log(res);
+          that.getView().getModel().setProperty("/GroceryList", res);
         })
-      }
+      },
+
+
+      setRecipeInput: function(pEvent, pAction) {
+        const that = this;
+        const iRecipeControlIndex = 2;
+        const t = this.getView().getModel().getProperty("/GroceryList");
+        // finish all the writes first
+        for (let i=0 ; i<t.length ; i++) {
+          if ( t[i].dirtyRow ) {
+            if (pAction === "SAVE") {
+              const sString = 
+                this.getView().byId("iDtblGroceryList").getItems()[i].getCells()[iRecipeControlIndex].getValue();
+
+              const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving '" + sString + "' to database..."});
+              oGlobalBusyDialog.open();
+              saveRecipe("Grocery", oData[i].rowNo, sString).then(function(res) {
+                oGlobalBusyDialog.close();
+              })
+            }
+          }
+        }
+        // then reset all the flags
+        for (let i=0 ; i<t.length ; i++) {
+          that.onPress(that.getView().byId("iDtblGroceryList").getItems()[i], false);
+          let oData = that.getView().getModel().getProperty("/GroceryList");
+          oData[i].dirtyRow = false;
+          that.getView().getModel().setProperty("/GroceryList", oData);
+        }
+      },
+
+
+      onPress: function(oItem, oFlag) {
+        //const oFlag = oItem.getDetailControl().getVisible();
+
+        oItem.getDetailControl().setVisible(!oFlag);
+        var oCells = oItem.getCells();
+        $(oCells).each(function(i) {
+          var oCell = oCells[i];
+          if(oCell instanceof sap.m.Input) {
+            oCell.setEditable(oFlag);
+          }else if(oCell instanceof sap.m.Select) {
+            oCell.setEnabled(oFlag);
+          }else if(oCell instanceof sap.m.Button) {
+            oCell.setVisible(oFlag);                      
+          }
+        });
+    	}
     });
   });
 </script>

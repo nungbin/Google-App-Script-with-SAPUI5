@@ -1,10 +1,11 @@
 <script>
   function initData() {
     let oData = {
-      TopFlexBoxBusy: true,
-      DDStore:        [],
-      DDIngre:        [],
-      GroceryList:    []
+      TopFlexBoxBusy:    true,
+      rowRecipeEdited:   -1,
+      DDStore:           [],
+      DDIngre:           [],
+      GroceryList:       []
     }
 
     return oData;
@@ -105,6 +106,15 @@
       google.script.run.withSuccessHandler((pDataArray) => {
         resolve(pDataArray);
       }).insertIngredientToDatabase(pStore, pIngredient);      
-    })    
+    })
+  }
+
+
+  function saveRecipe(pSheet, pRow, pRecipe) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).saveRecipe(pSheet, pRow, pRecipe);      
+    })
   }
 </script>
