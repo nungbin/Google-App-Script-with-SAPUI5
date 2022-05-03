@@ -254,59 +254,88 @@
       },
 
       onSaveRecipe: function(oEvent) {
-        this.setRecipeInput(oEvent, "SAVE");
-      },
-
-
-      onCancelRecipe: function(oEvent) {
-        var that = this;
+        var   that = this;
+        var   dirtyRowArray=[];
+        const iRecipeControlIndex = 2;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
           if ( oData[i].dirtyRow ) {
-            sap.m.MessageBox.confirm("Unsaved changes. Save first?", {
-              title: "Confirm",
-              onClose: function(btn) {
-                if (btn === "OK") {
-                  that.setRecipeInput(oEvent, "SAVE");
-                }              
-              }
-            });
-            break;          
+            const sString = 
+              this.getView().byId("iDtblGroceryList").getItems()[i].getCells()[iRecipeControlIndex].getValue();
+            dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
+                                 "recipe": sString
+                              });
           }
         }
-        that.setRecipeInput(oEvent, "CANCEL");
-        retrieveGrocery("Grocery").then(function(res) {
-          console.log(res);
-          that.getView().getModel().setProperty("/GroceryList", res);
+                
+        const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving recipe(s) to database..."});
+        oGlobalBusyDialog.open();
+        Promise.all(dirtyRowArray.map(function(row) {
+          return saveRecipe("Grocery", row.rowNo, row.recipe);
+        })).then(function(res) {
+          oGlobalBusyDialog.close();
+          that.setRecipeInput(oEvent, true);
         })
       },
 
 
-      setRecipeInput: function(pEvent, pAction) {
-        const that = this;
+      onCancelRecipe: function(oEvent) {
+        var   that = this;
+        var   dirtyRowArray=[];
         const iRecipeControlIndex = 2;
-        const t = this.getView().getModel().getProperty("/GroceryList");
-        // finish all the writes first
-        for (let i=0 ; i<t.length ; i++) {
-          if ( t[i].dirtyRow ) {
-            if (pAction === "SAVE") {
-              const sString = 
-                this.getView().byId("iDtblGroceryList").getItems()[i].getCells()[iRecipeControlIndex].getValue();
-
-              const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving '" + sString + "' to database..."});
-              oGlobalBusyDialog.open();
-              saveRecipe("Grocery", oData[i].rowNo, sString).then(function(res) {
-                oGlobalBusyDialog.close();
-              })
-            }
+        const oData  = this.getView().getModel().getProperty("/GroceryList");
+        for (let i=0 ; i<oData.length ; i++) {
+          if ( oData[i].dirtyRow ) {
+            const sString = 
+              this.getView().byId("iDtblGroceryList").getItems()[i].getCells()[iRecipeControlIndex].getValue();
+            dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
+                                 "recipe": sString
+                              });
           }
         }
+        if (dirtyRowArray.length>0) {
+          sap.m.MessageBox.confirm("Unsaved changes. Save first?", {
+            title: "Confirm",
+            onClose: function(btn) {
+              if (btn === "OK") {
+                const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving recipe(s) to database..."});
+                oGlobalBusyDialog.open();
+                Promise.all(dirtyRowArray.map(function(row) {
+                  return saveRecipe("Grocery", row.rowNo, row.recipe);
+                })).then(function(res) {
+                  oGlobalBusyDialog.close();
+                  that.setRecipeInput(oEvent, true);
+                })
+              }
+              else {
+                that.setRecipeInput(oEvent, true);
+              }             
+            }
+          });
+        }
+        else {
+          that.setRecipeInput(oEvent, false);
+        }
+      },
+
+
+      setRecipeInput: function(pEvent, pRetrievGrocery) {
+        const that = this;
         // then reset all the flags
-        for (let i=0 ; i<t.length ; i++) {
+        let oData = that.getView().getModel().getProperty("/GroceryList");
+        for (let i=0 ; i<oData.length ; i++) {
           that.onPress(that.getView().byId("iDtblGroceryList").getItems()[i], false);
-          let oData = that.getView().getModel().getProperty("/GroceryList");
           oData[i].dirtyRow = false;
-          that.getView().getModel().setProperty("/GroceryList", oData);
+        }
+        that.getView().getModel().setProperty("/GroceryList", oData);
+
+        if (pRetrievGrocery) {
+          const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Retrieving grocery..."});
+          oGlobalBusyDialog.open();
+          retrieveGrocery("Grocery").then(function(res) {
+            that.getView().getModel().setProperty("/GroceryList", res);
+            oGlobalBusyDialog.close();
+        })
         }
       },
 
