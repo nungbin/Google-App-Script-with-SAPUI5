@@ -267,15 +267,20 @@
                               });
           }
         }
-                
-        const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving recipe(s) to database..."});
-        oGlobalBusyDialog.open();
-        Promise.all(dirtyRowArray.map(function(row) {
-          return saveRecipe("Grocery", row.rowNo, row.recipe);
-        })).then(function(res) {
-          oGlobalBusyDialog.close();
-          that.setRecipeInput(oEvent, true);
-        })
+
+        if (dirtyRowArray>0) {
+          const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving recipe(s) to database..."});
+          oGlobalBusyDialog.open();
+          Promise.all(dirtyRowArray.map(function(row) {
+            return saveRecipe("Grocery", row.rowNo, row.recipe);
+          })).then(function(res) {
+            oGlobalBusyDialog.close();
+            that.setRecipeInput(oEvent, true);
+          })
+        }
+        else {
+          that.setRecipeInput(oEvent, false);
+        }        
       },
 
 
