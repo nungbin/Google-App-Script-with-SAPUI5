@@ -14,7 +14,9 @@
       onInit: function(oEvent) {
         // Ensure the loading sequence of all views
         var that = this;
-        
+        const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Retrieving grocery..."});
+        oGlobalBusyDialog.open();
+
         const results = Promise.all([ getRangeData("Store", "A2:A", "", true),
                                       retrieveGrocery("Grocery"),
                                       retrieveGroceryHistory("Grocery History")
@@ -51,6 +53,7 @@
           that.getView().byId("iDtblHistoryGroceryList").setModel(oModel_1, "PGL");          
 
           that.getView().getModel().setProperty("/TopFlexBoxBusy", false);
+          oGlobalBusyDialog.close();
 
         }).catch(function(msg) {
           console.log(msg);
