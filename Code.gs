@@ -2,16 +2,40 @@
 // SAPUI5: https://sapui5.hana.ondemand.com/1.30.8/docs/guide/592f36fd077b45349a67dcb3efb46ab1.html
 // Script files (.gs) run on the server side
 
+
+// URL parameter example
+// yourUrl/?a=1&b=2&c=3&c=4
+//function doGet(e){
+//  e.queryString // will be a=1&b=2&c=3&c=4
+//  e.parameter; // will be {"a": "1", "b": "2", "c": "3"}. For parameters that have multiple values, this only returns the first value
+//  e.parameters; // will be {"a": ["1"], "b": ["2"], "c": ["3", "4"]}. Returns array of values for each key.
+//}
+var gVerifiedUser;
+
 function doGet(e) {
-  Logger.log(e.parameter);
+  Logger.log(e.parameter.user);
   Logger.log(Session.getActiveUser().getEmail());
 
-  // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
-  // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
-  let template = HtmlService.createTemplateFromFile('index');
-  template = prepareDataForHTML(template);
-  return template.evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
-  //return HtmlService.createHtmlOutputFromFile('index.html');
+  if (Object.keys(e.parameter).length > 0) {
+    //check if there is a user parameter
+    if (e.parameter.user !== undefined &&
+        e.parameter.user !== "") {
+      if ( verifyUser("Login", e.parameter.user) ) {
+        gVerifiedUser = e.parameter.user;
+        // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
+        // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
+        let template = HtmlService.createTemplateFromFile('index');
+        template = prepareDataForHTML(template);
+        return template.evaluate()
+                       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+                       .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+        //return HtmlService.createHtmlOutputFromFile('index.html');
+      }
+    }
+  }
+
+  // provide a login form
+  // credit goes to: https://github.com/choraria/google-apps-script/tree/master/Login%20Dashboard
 }
 
 
@@ -158,6 +182,7 @@ function insertIngredientToDatabase(pStore, pIngredient) {
 function appendGroceryToSheet(pSheet, pDataArray) {
   const sRange = "A1:D";
   let lDate = new Date();
+  const lVerifiedUser = Session.getActiveUser().getEmail() || gVerifiedUser;
 
   const lSheet = pSheet || "Grocery";
   //pDataArray = [];
@@ -165,7 +190,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
   //pDataArray.push("2");
   //pDataArray.push("3");
   pDataArray.push(uniqueId());
-  pDataArray.push(Session.getActiveUser().getEmail());
+  pDataArray.push(lVerifiedUser);
   pDataArray.push(lDate.toLocaleString());
   
   SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).appendRow(pDataArray);
@@ -267,6 +292,7 @@ function retrieveGroceryHistory(pSheet) {
 
 
 function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowToInsert) {
+  const lVerifiedUser = Session.getActiveUser().getEmail() || gVerifiedUser;
   const lDate = new Date();
   const lGrocerySheet = pGrocerySheet || "Grocery";
   const lHistorySheet = pHistorySheet || "Grocery History";
@@ -276,7 +302,7 @@ function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowTo
   const sHistorySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lHistorySheet);
   sHistorySheet.insertRowBefore(lRowtoInsert);
   sGrocerySheet.getRange("A" + lRowToDelete + ":F" + lRowToDelete).copyTo(sHistorySheet.getRange("A" + lRowtoInsert + ":F" + lRowtoInsert), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
-  sHistorySheet.getRange("G" + lRowtoInsert).setValue(Session.getActiveUser().getEmail());
+  sHistorySheet.getRange("G" + lRowtoInsert).setValue(lVerifiedUser);
   sHistorySheet.getRange("H" + lRowtoInsert).setValue(lDate.toLocaleString());
   sGrocerySheet.deleteRow(lRowToDelete);
 }
@@ -308,4 +334,24 @@ function saveRecipe(pSheet, pRow, pRecipe) {
   const lRecipe = pRecipe || "test";
 
   SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange("C" + lRow).setValue(lRecipe);
+}
+
+
+function verifyUser(pSheet, pUser) {
+  var lFound = false;
+  const lSheet = pSheet || "Login";
+  const lUser  = pUser;
+  // const lUser  = pUser || "Bshu";
+  const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange("A2:A").createTextFinder(lUser);
+  textFinder.matchCase(true);
+  textFinder.matchEntireCell(true);
+  const arrayMatch = textFinder.findAll();
+  if ( arrayMatch.length > 0 ) {
+    //arrayMatch.forEach((user) => {
+    //  Logger.log(user.getValue());
+    //})
+    lFound = true;
+  }
+  Logger.log(lFound);
+  return lFound;
 }
