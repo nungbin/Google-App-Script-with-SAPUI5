@@ -365,3 +365,24 @@ function compareGrocery(pSheet, pStore, pIngredient) {
   // compare store first
   const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange("A2:A").createTextFinder(lUser);
 }
+
+
+// alasql has some constrains. If column name is part of keywords, ex: 'store', it throws a parsing error.
+function checkIfStoreIngredientExist(pSheet, pStore, pIngredient) {
+  var lResult = false;
+  var oResult = [];
+  const lSheet = pSheet || "Grocery";
+  const lStore = pStore || "Costco";
+  const lIngredient = pIngredient || "MMM";
+  const oSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
+  const oRange = oSheet.getRange("A1").getDataRegion().getValues();
+
+  try {
+    oResult = SUPERSQL(`SELECT * FROM ? WHERE Storename = '${lStore}' AND Ingredient LIKE '%${lIngredient}%'`, oRange);
+  } catch (error) {
+  }
+  if (oResult.length) {
+    lResult = true;
+  }
+  return lResult;
+}
