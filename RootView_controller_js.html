@@ -196,9 +196,9 @@
                     that.getView().getModel().setProperty("/GroceryList", res[0]);
                     that.getView().byId("iDtblHistoryGroceryList").getModel("PGL").setProperty("/PastGroceryList", res[1]);
 
-                    oView.byId("iDtblGroceryList").removeSelections(true);
-                    oView.byId("iDtblHistoryGroceryList").removeSelections(true);
-                    oView.byId("panelHistory").setExpanded(false);
+                    that.getView().byId("iDtblGroceryList").removeSelections(true);
+                    that.getView().byId("iDtblHistoryGroceryList").removeSelections(true);
+                    that.getView().byId("panelHistory").setExpanded(false);
                     oGlobalBusyDialog.close();
 
                   }).catch(function(msg) {
@@ -271,7 +271,7 @@
           }
         }
 
-        if (dirtyRowArray>0) {
+        if (dirtyRowArray.length>0) {
           const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Saving recipe(s) to database..."});
           oGlobalBusyDialog.open();
           Promise.all(dirtyRowArray.map(function(row) {

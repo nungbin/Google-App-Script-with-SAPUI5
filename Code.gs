@@ -26,6 +26,7 @@ function doGet(e) {
         // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
         let template = HtmlService.createTemplateFromFile('index');
         template = prepareDataForHTML(template);
+        // 'evaluate' takes time to complete
         return template.evaluate()
                        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
                        .addMetaTag('viewport', 'width=device-width, initial-scale=1');
@@ -191,7 +192,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
   //pDataArray.push("3");
   pDataArray.push(uniqueId());
   pDataArray.push(lVerifiedUser);
-  pDataArray.push(lDate.toLocaleString());
+  pDataArray.push(lDate.toLocaleString("en-US", {timeZone: "America/Edmonton"}));
   
   SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).appendRow(pDataArray);
 
@@ -354,16 +355,6 @@ function verifyUser(pSheet, pUser) {
   }
   Logger.log(lFound);
   return lFound;
-}
-
-
-function compareGrocery(pSheet, pStore, pIngredient) {
-  var lMatched = false;
-  const lSheet = pSheet || "Grocery";
-  const lStore = pStore || "Costco";
-  const lIngredient = pIngredient || "Milk";
-  // compare store first
-  const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange("A2:A").createTextFinder(lUser);
 }
 
 

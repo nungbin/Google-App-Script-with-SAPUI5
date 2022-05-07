@@ -38,3 +38,10 @@ function testValidate(pFileId) {
   })
   Logger.log(lEditors);
 }
+
+
+function testTimeZone() {
+  // https://timezonedb.com/time-zones
+  const lDate = new Date().toLocaleString("en-US", {timeZone: "America/Edmonton"});
+  Logger.log(lDate);
+}
