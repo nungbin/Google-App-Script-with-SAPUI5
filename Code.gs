@@ -372,8 +372,8 @@ function checkIfStoreIngredientExist(pSheet, pStore, pIngredient) {
   var lResult = false;
   var oResult = [];
   const lSheet = pSheet || "Grocery";
-  const lStore = pStore || "Costco";
-  const lIngredient = pIngredient || "MMM";
+  //const lStore = pStore || "Costco";
+  //const lIngredient = pIngredient || "MMM";
   const oSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
   const oRange = oSheet.getRange("A1").getDataRegion().getValues();
 
