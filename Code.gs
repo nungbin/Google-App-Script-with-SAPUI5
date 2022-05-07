@@ -355,3 +355,13 @@ function verifyUser(pSheet, pUser) {
   Logger.log(lFound);
   return lFound;
 }
+
+
+function compareGrocery(pSheet, pStore, pIngredient) {
+  var lMatched = false;
+  const lSheet = pSheet || "Grocery";
+  const lStore = pStore || "Costco";
+  const lIngredient = pIngredient || "Milk";
+  // compare store first
+  const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange("A2:A").createTextFinder(lUser);
+}

@@ -1,10 +1,25 @@
-	<script>
+<script>
     // Instantiate the View and display
-    var oView = sap.ui.xmlview({
-      viewContent: jQuery('#oView').html()
+    sap.ui.getCore().attachInit(function () {
+      "use strict";
+
+      // sap.ushell is enabled via 
+      /* 
+          <script src="https://sapui5.hana.ondemand.com/test-resources/sap/ushell/bootstrap/sandbox.js" 
+            id="sap-ushell-bootstrap">
+      */
+      if (sap.ushell && sap.ushell.Container && sap.ushell.Container.getService) {
+        var mainApp = new sap.m.App({initialPage:"idPage1"});
+
+        const oView1 = sap.ui.xmlview({
+          id:          "idPage1",
+          viewContent: jQuery("#oView1").html()
+        });
+        mainApp.addPage(oView1);
+        mainApp.placeAt("content");
+
+        removeLoadingScreen();
+      }
     });
 
-    oView.placeAt('content');
-
-    removeLoadingScreen();
 </script>
