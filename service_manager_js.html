@@ -117,4 +117,13 @@
       }).saveRecipe(pSheet, pRow, pRecipe);      
     })
   }
+
+
+  function checkIfStoreIngredientExist(pSheet, pStore, pIngredient) {
+    return new Promise(function(resolve, reject) {
+      google.script.run.withSuccessHandler((pDataArray) => {
+        resolve(pDataArray);
+      }).checkIfStoreIngredientExist(pSheet, pStore, pIngredient);      
+    })    
+  }
 </script>

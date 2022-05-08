@@ -60,6 +60,13 @@
         });
       },
 
+
+      onRefresh: function(oEvent) {
+        this.onInit(oEvent);
+        this.getView().byId("idDDStore").clearSelection();
+        this.getView().byId("idDDIngre").clearSelection();
+      },
+
       onStoreComboChange: function(oEvent) {
         const oView = this.getView();
         oView.getModel().setProperty("/TopFlexBoxBusy", true);
@@ -84,6 +91,7 @@
 
       onBtnAdd: function(oEvent) {
         const oView = this.getView();
+        const that = this;
         var   enteredingredient = oView.byId("idDDIngre").getValue();
         const keyStore  = oView.byId("idDDStore").getSelectedKey(),
               storeText = oView.byId("idDDStore").getSelectedItem().getText(),
@@ -97,8 +105,6 @@
           sap.m.MessageToast.show("Please enter or select an ingredient!");
           return;
         }
-        //if ( keyIngre === "" || keyIngre === " " ) { 
-        //}
 
         // check if entered ingredient exists
         const len     = oView.byId("idDDIngre").getItems().length;
@@ -147,13 +153,40 @@
         }
 
 
-        oView.getModel().setProperty("/TopFlexBoxBusy", true);
-        
-        let arrayGrocery = [];
         const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
         const sIngre = enteredingredient;
-        arrayGrocery.push(sStore);
-        arrayGrocery.push(sIngre);
+
+        //Check if similiar ingredient is already in the grocery list
+        const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Checking if ingredient is already on the list..."});
+        oGlobalBusyDialog.open();
+        checkIfStoreIngredientExist("Grocery", sStore, sIngre).then((res) => {
+          oGlobalBusyDialog.close();
+
+          if (res) {
+            //ingredient is already in the list. Confirm if to be added in again
+            sap.m.MessageBox.confirm(`There is already a similar ingredient '${sIngre}' existing with store '${sStore}'. Do you still want to add this ingredient?`, {
+              title: "Confirm",
+              onClose: function(btn) {
+                if (btn === "OK") {
+                  that.addGroceryToDatabase(sStore, sIngre);
+                }         
+              }
+            });
+          }
+          else {
+            that.addGroceryToDatabase(sStore, sIngre);
+          }
+        })
+      },
+
+
+      addGroceryToDatabase: function(pStore, pIngre) {
+        const oView = this.getView();
+
+        oView.getModel().setProperty("/TopFlexBoxBusy", true);        
+        let arrayGrocery = [];
+        arrayGrocery.push(pStore);
+        arrayGrocery.push(pIngre);
         arrayGrocery.push("");
         appendGroceryToSheet("Grocery", arrayGrocery).then((res) => {
           const t = oView.getModel().getProperty("/GroceryList");
@@ -163,6 +196,7 @@
           oView.getModel().setProperty("/TopFlexBoxBusy", false);
         })
       },
+
 
       // https://plnkr.co/edit/FCrGwsBM4K0E16XFEOEc?p=preview&preview
       onBtnAddBack: function(oEvent) {

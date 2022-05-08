@@ -48,7 +48,8 @@
                   </FlexBox>
                   <FlexBox width="100%" id="box5" alignItems="End">
                       <items>
-                          <Button text="Add" id="idBTNAdd" class="sapUiSmallMargin" press=".onBtnAdd"/>
+                          <Button text="Add" id="idBTNAdd" class="sapUiSmallMarginBeginEnd" press=".onBtnAdd"/>
+                          <Button id="idRefresh" icon="sap-icon://refresh" class="sapUiLargeMarginBeginEnd" press=".onRefresh"/>
                       </items>
                   </FlexBox>
               </items>
@@ -107,12 +108,12 @@
                                     liveChange=".onRecipeChange"
                                     class="sapUiSmallMarginBottom">
                                   </Input>
-                                  <Button text="Save" 
+                                  <Button  
                                           type="Transparent" 
                                           visible="false"
                                           icon="sap-icon://save"
                                           press=".onSaveRecipe"/>
-                                  <Button text="Cancel" 
+                                  <Button 
                                           type="Transparent" 
                                           visible="false"
                                           icon="sap-icon://cancel"

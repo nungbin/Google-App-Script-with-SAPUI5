@@ -10,7 +10,6 @@
 //  e.parameter; // will be {"a": "1", "b": "2", "c": "3"}. For parameters that have multiple values, this only returns the first value
 //  e.parameters; // will be {"a": ["1"], "b": ["2"], "c": ["3", "4"]}. Returns array of values for each key.
 //}
-var gVerifiedUser;
 
 function doGet(e) {
   Logger.log(e.parameter.user);
@@ -21,7 +20,7 @@ function doGet(e) {
     if (e.parameter.user !== undefined &&
         e.parameter.user !== "") {
       if ( verifyUser("Login", e.parameter.user) ) {
-        gVerifiedUser = e.parameter.user;
+        PropertiesService.getScriptProperties().setProperty('gVerifiedUser', e.parameter.user);
         // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
         // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
         let template = HtmlService.createTemplateFromFile('index');
@@ -183,7 +182,8 @@ function insertIngredientToDatabase(pStore, pIngredient) {
 function appendGroceryToSheet(pSheet, pDataArray) {
   const sRange = "A1:D";
   let lDate = new Date();
-  const lVerifiedUser = Session.getActiveUser().getEmail() || gVerifiedUser;
+  const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
+                        Session.getActiveUser().getEmail();
 
   const lSheet = pSheet || "Grocery";
   //pDataArray = [];
@@ -293,7 +293,8 @@ function retrieveGroceryHistory(pSheet) {
 
 
 function moveGroceryToHistory(pGrocerySheet, pRowToDelete, pHistorySheet, pRowToInsert) {
-  const lVerifiedUser = Session.getActiveUser().getEmail() || gVerifiedUser;
+  const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
+                        Session.getActiveUser().getEmail();
   const lDate = new Date();
   const lGrocerySheet = pGrocerySheet || "Grocery";
   const lHistorySheet = pHistorySheet || "Grocery History";
@@ -363,8 +364,8 @@ function checkIfStoreIngredientExist(pSheet, pStore, pIngredient) {
   var lResult = false;
   var oResult = [];
   const lSheet = pSheet || "Grocery";
-  //const lStore = pStore || "Costco";
-  //const lIngredient = pIngredient || "MMM";
+  const lStore = pStore || "Costco";
+  const lIngredient = pIngredient || "MMM";
   const oSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
   const oRange = oSheet.getRange("A1").getDataRegion().getValues();
 
