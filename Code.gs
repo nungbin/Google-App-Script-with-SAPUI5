@@ -113,7 +113,7 @@ function uniqueId() {
 
 
 function getIngredientsPerStore(pStore) {
-  const text = pStore || "Superstore";
+  const text = pStore || "Home Depot";
   const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Ingredient Database").createTextFinder(text);
   let   matched = [],
         matchedValue,
@@ -129,7 +129,7 @@ function getIngredientsPerStore(pStore) {
   
   if ( matchedValue !== "" ) {
     const sSheetName = "Ingredient Database";
-    const rRange     = "A2:H";
+    const rRange     = "A2:I";
     let lSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sSheetName );
     let lLastRow = lSheet.getRange(rRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
     let oData    = lSheet.getRange(rRange + lLastRow).getValues();
