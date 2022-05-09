@@ -12,27 +12,14 @@
 //}
 
 function doGet(e) {
-  Logger.log(e.parameter.user);
+  Logger.log(e.parameter);
   Logger.log(Session.getActiveUser().getEmail());
 
-  if (Object.keys(e.parameter).length > 0) {
-    //check if there is a user parameter
-    if (e.parameter.user !== undefined &&
-        e.parameter.user !== "") {
-      if ( verifyUser("Login", e.parameter.user) ) {
-        PropertiesService.getScriptProperties().setProperty('gVerifiedUser', e.parameter.user);
-        // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
-        // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
-        let template = HtmlService.createTemplateFromFile('index');
-        template = prepareDataForHTML(template);
-        // 'evaluate' takes time to complete
-        return template.evaluate()
-                       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-                       .addMetaTag('viewport', 'width=device-width, initial-scale=1');
-        //return HtmlService.createHtmlOutputFromFile('index.html');
-      }
-    }
-  }
+  // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
+  // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
+  let template = HtmlService.createTemplateFromFile('index');
+  template = prepareDataForHTML(template);
+  return template.evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 
   // provide a login form
   // credit goes to: https://github.com/choraria/google-apps-script/tree/master/Login%20Dashboard
@@ -214,12 +201,12 @@ function appendGroceryToSheet(pSheet, pDataArray) {
 
 
 function retrieveGrocery(pSheet) {
-  const sRange = "A1:D";
+  const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
+                        Session.getActiveUser().getEmail();
+  const sRange = "A1";
   const lSheet = pSheet || "Grocery";
-
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
-  const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
-  const oData    = oSheet.getRange(sRange + lLastRow).getValues();
+  const oData    = oSheet.getRange(sRange).getDataRegion().getValues();
   
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
@@ -228,20 +215,43 @@ function retrieveGrocery(pSheet) {
          oData[i][2] === "" ) {
       break;
     }
-    if ( oData[i][0] !== "" ||
-         oData[i][1] !== "" || 
-         oData[i][2] !== "" ) {
-      oResult.push({ 
-                     "Store"      : oData[i][0],
-                     "Ingredient" : oData[i][1],
-                     "Recipe"     : oData[i][2],
-                     "UID"        : oData[i][3],
-                     "dirtyRow"   : false,
-                     "rowNo"      : i + 1
-                  });
+ 
+    if ( lVerifiedUser === "" ||
+         lVerifiedUser === undefined ||
+         lVerifiedUser === null ) {
+      if ( oData[i][4] === "" ) {
+        // demo purpose
+        if ( oData[i][0] !== "" ||
+            oData[i][1] !== "" || 
+            oData[i][2] !== "" ) {
+          oResult.push({ 
+                        "Store"      : oData[i][0],
+                        "Ingredient" : oData[i][1],
+                        "Recipe"     : oData[i][2],
+                        "UID"        : oData[i][3],
+                        "dirtyRow"   : false,
+                        "rowNo"      : i + 1
+                      });
+        }
+      }
+    } else {
+      if ( oData[i][4] !== "" ) {
+        // productivity purpose
+        if ( oData[i][0] !== "" ||
+            oData[i][1] !== "" || 
+            oData[i][2] !== "" ) {
+          oResult.push({ 
+                        "Store"      : oData[i][0],
+                        "Ingredient" : oData[i][1],
+                        "Recipe"     : oData[i][2],
+                        "UID"        : oData[i][3],
+                        "dirtyRow"   : false,
+                        "rowNo"      : i + 1
+                      });
+        }
+      }
     }
   }
-  Logger.log(oResult);
   return oResult;  
 }
 
@@ -255,13 +265,13 @@ function retrieveGrocery(pSheet) {
 
 
 function retrieveGroceryHistory(pSheet) {
+  const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
+                        Session.getActiveUser().getEmail();
   const listLimit = 20;
-  const sRange = "A1:H";
+  const sRange = "A1";
   const lSheet = pSheet || "Grocery History";
-
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
-  const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
-  const oData    = oSheet.getRange(sRange + lLastRow).getValues();
+  const oData    = oSheet.getRange(sRange).getDataRegion().getValues();
   
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
@@ -274,17 +284,41 @@ function retrieveGroceryHistory(pSheet) {
       // only retrieve listLimit number of items
       break;
     }
-    if ( oData[i][0] != "" ||
-         oData[i][1] != "" || 
-         oData[i][2] != "" ) {
-      oResult.push({ 
-                     "Store"      : oData[i][0],
-                     "Ingredient" : oData[i][1],
-                     "Recipe"     : oData[i][2],
-                     "UID"        : oData[i][3],
-                     "ChangedOn"  : oData[i][7],
-                     "rowNo"      : i + 1
-                  });
+
+    if ( lVerifiedUser === "" ||
+         lVerifiedUser === undefined ||
+         lVerifiedUser === null ) {
+      if ( oData[i][4] === "" ) {
+        // demo purpose
+        if ( oData[i][0] != "" ||
+            oData[i][1] != "" || 
+            oData[i][2] != "" ) {
+          oResult.push({ 
+                        "Store"      : oData[i][0],
+                        "Ingredient" : oData[i][1],
+                        "Recipe"     : oData[i][2],
+                        "UID"        : oData[i][3],
+                        "ChangedOn"  : oData[i][7],
+                        "rowNo"      : i + 1
+                      });
+        }      
+      }
+    } else {
+      if ( oData[i][4] !== "" ) {
+        // productivity purpose
+        if ( oData[i][0] != "" ||
+            oData[i][1] != "" || 
+            oData[i][2] != "" ) {
+          oResult.push({ 
+                        "Store"      : oData[i][0],
+                        "Ingredient" : oData[i][1],
+                        "Recipe"     : oData[i][2],
+                        "UID"        : oData[i][3],
+                        "ChangedOn"  : oData[i][7],
+                        "rowNo"      : i + 1
+                      });            
+        }
+      }
     }
   }
   return oResult;  
