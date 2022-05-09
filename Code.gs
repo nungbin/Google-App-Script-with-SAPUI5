@@ -129,16 +129,15 @@ function getIngredientsPerStore(pStore) {
   
   if ( matchedValue !== "" ) {
     const sSheetName = "Ingredient Database";
-    const rRange     = "A2:I";
     let lSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sSheetName );
-    let lLastRow = lSheet.getRange(rRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
-    let oData    = lSheet.getRange(rRange + lLastRow).getValues();
-    oData.forEach((row) => {
-      if ( row[matchedColumn-1] === 'x' ) {
-        const lResult = custConcat(row[1], row[2], row[3]);
-        
-        matched.push(lResult);
-        //matched.push(row[0]);       
+    let oData = lSheet.getRange("A1").getDataRegion().getValues();
+    oData.forEach((row, i) => {
+      if ( i > 0 ) {
+        if ( row[matchedColumn-1] === 'x' ) {
+          const lResult = custConcat(row[1], row[2], row[3]);
+          
+          matched.push(lResult);    
+        }
       }
     })
   }
