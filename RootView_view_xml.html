@@ -147,7 +147,14 @@
                             <Button text="Add selected back to Grocery List" 
                                     id="idBTNAddBack" 
                                     class="sapUiSmallMargin" 
-                                    press=".onBtnAddBack"/>
+                                    press=".onBtnAddBack"/>                            
+                            <ToolbarSpacer/>
+                            <!-- Add the Personalization button -->
+                            <Button icon="sap-icon://action-settings" press=".onPersoButtonPressed" >
+                              <layoutData>
+                                <OverflowToolbarLayoutData priority="NeverOverflow" />
+                              </layoutData>
+                            </Button>
                           </content>
                         </OverflowToolbar>
                       </headerToolbar>

@@ -7,11 +7,28 @@
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageBox",
     "sap/m/MessageToast",
-  ], function(jQuery, Controller, Filter, JSONModel, MessageBox, MessageToast) {
+    'sap/m/TablePersoController'
+  ], function(jQuery, Controller, Filter, JSONModel, MessageBox, MessageToast, TablePersoController) {
     "use strict";
 
     return Controller.extend("root.Controller", {
       onInit: function(oEvent) {
+
+        // Table Personalization
+        // http://www.ut163.com/sapui5/docs/topics/1c60212834c049ed9f65d743dfeb3d9a.html
+        // Create a persistence key
+        var oPersId = {container: "mycontainer-1", item: "myitem-1"};
+
+        // Get a personalization service provider from the shell (or create your own)
+        var oProvider = sap.ushell.Container.getService("Personalization").getPersonalizer(oPersId);
+
+        // Instantiate a controller connecting your table and the persistence service
+        this._oTPC = new sap.m.TablePersoController({
+            table: this.byId("iDtblHistoryGroceryList"),
+            persoService: oProvider
+        }).activate();
+        // Table Personalization
+
         // Ensure the loading sequence of all views
         var that = this;
         const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Retrieving grocery..."});
@@ -60,6 +77,11 @@
         });
       },
 
+      // Table Personalization
+      onPersoButtonPressed: function (oEvent) {
+        this._oTPC.openDialog();
+      },
+      // Table Personalization
 
       onRefresh: function(oEvent) {
         this.onInit(oEvent);
