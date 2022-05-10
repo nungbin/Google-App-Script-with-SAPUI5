@@ -229,7 +229,7 @@ function retrieveGrocery(pSheet) {
                         "Ingredient" : oData[i][1],
                         "Recipe"     : oData[i][2],
                         "UID"        : oData[i][3],
-                        "dirtyRow"   : false,
+                        "dirtyRow"   : -1,
                         "rowNo"      : i + 1
                       });
         }
@@ -245,7 +245,7 @@ function retrieveGrocery(pSheet) {
                         "Ingredient" : oData[i][1],
                         "Recipe"     : oData[i][2],
                         "UID"        : oData[i][3],
-                        "dirtyRow"   : false,
+                        "dirtyRow"   : -1,
                         "rowNo"      : i + 1
                       });
         }
