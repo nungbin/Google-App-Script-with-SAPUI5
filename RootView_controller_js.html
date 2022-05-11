@@ -325,7 +325,7 @@
         const iRecipeControlIndex = 2;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
-          if ( oData[i].dirtyRow != -1) {
+          if ( oData[i].dirtyRow != -1 ) {
             const sString = 
               this.getView().byId("iDtblGroceryList").getItems()[oData[i].dirtyRow].getCells()[iRecipeControlIndex].getValue();
             dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
@@ -356,7 +356,7 @@
         const iRecipeControlIndex = 2;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
-          if ( oData[i].dirtyRow ) {
+          if ( oData[i].dirtyRow != -1 ) {
             const sString = 
               this.getView().byId("iDtblGroceryList").getItems()[i].getCells()[iRecipeControlIndex].getValue();
             dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
