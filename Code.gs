@@ -206,6 +206,7 @@ function appendGroceryToSheet(pSheet, pDataArray) {
                    "Ingredient" : oData[i][1],
                    "Recipe"     : oData[i][2],
                    "UID"        : oData[i][3],
+                   "dirtyRow"   : -1,
                    "rowNo"      : i + 1
                 });
   }

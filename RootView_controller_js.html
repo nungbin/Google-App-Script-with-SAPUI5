@@ -63,13 +63,7 @@
 
           // Finally got it working of using Model name reference
           let oModel_1 = new sap.ui.model.json.JSONModel();
-          t = [];
           t = { PastGroceryList: res[2] };
-          //t.PastGroceryList.push({
-          //  "Store":      "S1",
-          //  "Ingredient": "I1",
-          //  "Recipe":     "R1"
-          //})
           oModel_1.setData(t);
           that.getView().byId("iDtblHistoryGroceryList").setModel(oModel_1, "PGL");          
 
@@ -169,18 +163,27 @@
                     oView.getModel().setProperty("/DDIngre", t);
                   }
                   oGlobalBusyDialog.close();
+                  that._CheckGroceryAndAdd(oEvent, enteredingredient);
                 })
+              } else {
+                that._CheckGroceryAndAdd(oEvent, enteredingredient);
               }
             }
           });
         }
         else {
-          enteredingredient = oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text;
+          that._CheckGroceryAndAdd(oEvent,
+                                   oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text
+                                  );
         }
+      },
 
 
+      _CheckGroceryAndAdd: function(oEvent, pIngre) {
+        const oView = this.getView();
+        const that = this;
         const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
-        const sIngre = enteredingredient;
+        const sIngre = pIngre;
 
         //Check if similiar ingredient is already in the grocery list
         const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Checking if ingredient is already on the list..."});
@@ -316,7 +319,7 @@
         let oData = this.getView().getModel().getProperty("/GroceryList");
         const iRowIndex = oData.findIndex(element => element.UID === sUID);
         oData[iRowIndex].dirtyRow = iDirtyRowIndex;
-        this.getView().getModel().setProperty("/GroceryList", oData);
+        this.getView().getModel().setProperty("/GroceryList", oData);      
       },
 
       onSaveRecipe: function(oEvent) {
@@ -358,7 +361,7 @@
         for (let i=0 ; i<oData.length ; i++) {
           if ( oData[i].dirtyRow != -1 ) {
             const sString = 
-              this.getView().byId("iDtblGroceryList").getItems()[i].getCells()[iRecipeControlIndex].getValue();
+              this.getView().byId("iDtblGroceryList").getItems()[oData[i].dirtyRow].getCells()[iRecipeControlIndex].getValue();
             dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
                                  "recipe": sString
                               });
