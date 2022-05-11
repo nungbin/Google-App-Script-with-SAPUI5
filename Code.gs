@@ -12,14 +12,27 @@
 //}
 
 function doGet(e) {
-  Logger.log(e.parameter);
+  Logger.log(e.parameter.user);
   Logger.log(Session.getActiveUser().getEmail());
 
-  // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
-  // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
-  let template = HtmlService.createTemplateFromFile('index');
-  template = prepareDataForHTML(template);
-  return template.evaluate().setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  if (Object.keys(e.parameter).length > 0) {
+    //check if there is a user parameter
+    if (e.parameter.user !== undefined &&
+        e.parameter.user !== "") {
+      if ( verifyUser("Login", e.parameter.user) ) {
+        PropertiesService.getScriptProperties().setProperty('gVerifiedUser', e.parameter.user);
+        // evaluate(): needed so '<?!= include ?>' will work. https://youtu.be/1toLqGwMRVc?t=957
+        // the below line is learned from https://www.youtube.com/watch?v=RJtaMJTlRhE&t=234s
+        let template = HtmlService.createTemplateFromFile('index');
+        template = prepareDataForHTML(template);
+        // 'evaluate' takes time to complete
+        return template.evaluate()
+                       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+                       .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+        //return HtmlService.createHtmlOutputFromFile('index.html');
+      }
+    }
+  }
 
   // provide a login form
   // credit goes to: https://github.com/choraria/google-apps-script/tree/master/Login%20Dashboard
