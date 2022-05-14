@@ -302,14 +302,6 @@ function retrieveGrocery(pSheet) {
 }
 
 
-//function insertOneRowInGroceryHistory(pSheet, pRowIndex) {
-//  const lSheet = pSheet || "Grocery History";
-//  const lRowIndex = pRowIndex || 2;
-//  const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
-//  oSheet.insertRows(lRowIndex, 1);
-//}
-
-
 function retrieveGroceryHistory(pSheet) {
   const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
                         Session.getActiveUser().getEmail();
@@ -404,16 +396,25 @@ function moveHistoryToGrocery(pHistorySheet, pRowsArray, pGrocerySheet) {
   //pRowsArray.push(2);
   //pRowsArray.push(3);
 
+  let sURL = "";
+  const cIngreCol = "B";
   const lDate = new Date();
   const lGrocerySheet = pGrocerySheet || "Grocery";
   const lHistorySheet = pHistorySheet || "Grocery History";
   //const sGrocerySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lGrocerySheet);
   const sHistorySheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lHistorySheet);
   pRowsArray.forEach((row) => {
+    sIngreCol = cIngreCol + row;
+    sURL = getIngredientURL(lHistorySheet, sIngreCol);
+    if (sURL === undefined || sURL === null) {
+      sURL = "";
+    }
+
     let rowData=[];
     rowData.push(sHistorySheet.getRange("A"+row).getValue());
     rowData.push(sHistorySheet.getRange("B"+row).getValue());
     rowData.push(sHistorySheet.getRange("C"+row).getValue());
+    rowData.push(sURL);
     appendGroceryToSheet(lGrocerySheet, rowData);
   })
 }

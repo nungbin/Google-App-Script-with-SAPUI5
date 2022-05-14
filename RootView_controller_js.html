@@ -295,20 +295,22 @@
       },
 
 
-      onSelectGrocery: function(oEvent) {
-        alert("onSelectGrocery clicked!!!");
-      },
-
       onSelectedGrocery: function(oEvent) {
-          // learned from https://plnkr.co/edit/mNxnG4CnxmzjkCGKkDEw?p=preview&preview
-          const oSelectedItem = oEvent.getParameter("listItem");
-          const oModel = oSelectedItem.getBindingContext().getObject();
+        if ( oEvent.getSource().getSelected() === true ) {          
+          // Move to grocery history
+          const iUIDPosition=6;
+          const iDirtyRowIndex = this.getView().byId("iDtblGroceryList").indexOfItem(oEvent.getSource().getParent());
+          const sUID = oEvent.getSource().getParent().getCells()[iUIDPosition].getText();
+
+          // Keep track of the row which has a change in it!!!
+          let oData = this.getView().getModel().getProperty("/GroceryList");
+          const iRowIndex = oData.findIndex(element => element.UID === sUID);
           var that = this;
-          //that.getView().getModel().setProperty("/TopFlexBoxBusy", true);
+
           const oGlobalBusyDialog = new sap.m.BusyDialog({text: "Moving selected grocery to History..."});
           oGlobalBusyDialog.open();
 
-          moveGroceryToHistory("Grocery", oModel.rowNo, "Grocery History", 2).then(function(res) {
+          moveGroceryToHistory("Grocery", oData[iRowIndex].rowNo, "Grocery History", 2).then(function(res) {
             const results = Promise.all([ 
                                           retrieveGrocery("Grocery"),
                                           retrieveGroceryHistory("Grocery History")
@@ -325,7 +327,9 @@
             });
 
           })
+        }
       },
+
 
       onRecipeChange: function(oEvent) {
         const iUIDPosition=6;
@@ -342,12 +346,12 @@
       onSaveRecipe: function(oEvent) {
         var   that = this;
         var   dirtyRowArray=[];
-        const iRecipeControlIndex = 2;
+        const iRecipeControlIndex = 3;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
           if ( oData[i].dirtyRow != -1 ) {
             const sString = 
-              this.getView().byId("iDtblGroceryList").getItems()[oData[i].dirtyRow].getCells()[iRecipeControlIndex].getValue();
+              this.getView().byId("iDtblGroceryList").getItems()[oData[i].dirtyRow].getCells()[iRecipeControlIndex].getValue();            
             dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
                                  "recipe": sString
                               });
@@ -373,7 +377,7 @@
       onCancelRecipe: function(oEvent) {
         var   that = this;
         var   dirtyRowArray=[];
-        const iRecipeControlIndex = 2;
+        const iRecipeControlIndex = 3;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
           if ( oData[i].dirtyRow != -1 ) {

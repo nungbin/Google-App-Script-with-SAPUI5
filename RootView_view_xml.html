@@ -101,7 +101,7 @@
                                           detailPress=".onGroceryItemEdit" 
                           >
                               <cells>
-                                  <CheckBox text="Check Box" selected="false" select=".onSelectGrocery"
+                                  <CheckBox text="Check Box" selected="false" select=".onSelectedGrocery"
                                   />
                                   <Text text="{Store}"      id="iDTXTStore"/>
                                   <Link text="{Ingredient}" 
@@ -204,7 +204,7 @@
                                   <Text text="{PGL>Store}"      id="text5"/>
                                   <Link text="{PGL>Ingredient}" 
                                         emphasized="true"
-                                        enabled="{= ${PGL>URL} === '' ? false : true }"
+                                        enabled="false"
                                         id="text6" 
                                   />
                                   <Text text="{PGL>Recipe}"     id="text7"/>
