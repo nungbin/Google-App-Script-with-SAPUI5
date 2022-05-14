@@ -113,6 +113,7 @@ function uniqueId() {
 
 
 function getIngredientsPerStore(pStore) {
+  const sIngreCol = "B";
   const text = pStore || "Home Depot";
   const textFinder = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Ingredient Database").createTextFinder(text);
   let   matched = [],
@@ -133,10 +134,11 @@ function getIngredientsPerStore(pStore) {
     let oData = lSheet.getRange("A1").getDataRegion().getValues();
     oData.forEach((row, i) => {
       if ( i > 0 ) {
-        if ( row[matchedColumn-1] === 'x' ) {
-          const lResult = custConcat(row[1], row[2], row[3]);
-          
-          matched.push(lResult);    
+        if ( row[matchedColumn-1] === 'x' ) {       
+          matched.push({
+            ingre: custConcat(row[1], row[2], row[3]),
+            url:   lSheet.getRange(sIngreCol + (i + 1)).getRichTextValue().getLinkUrl()
+          });    
         }
       }
     })
@@ -180,32 +182,52 @@ function insertIngredientToDatabase(pStore, pIngredient) {
 
 function appendGroceryToSheet(pSheet, pDataArray) {
   const sRange = "A1:D";
+  const cIngreCol = "B";
+  let sIngreCol;
+  let sURL = null;
+  let sIngre;
   let lDate = new Date();
   const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
                         Session.getActiveUser().getEmail();
 
   const lSheet = pSheet || "Grocery";
   //pDataArray = [];
-  //pDataArray.push("1");
-  //pDataArray.push("2");
-  //pDataArray.push("3");
+  //pDataArray.push("test1");
+  //pDataArray.push("test2");
+  //pDataArray.push("test3");
+  //pDataArray.push("");
   pDataArray.push(uniqueId());
   pDataArray.push(lVerifiedUser);
   pDataArray.push(lDate.toLocaleString("en-US", {timeZone: "America/Edmonton"}));
-  
-  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).appendRow(pDataArray);
+
+  // Insert URL
+  sIngre = pDataArray[1];
+  sURL = pDataArray[3];
+  pDataArray.splice(3,1);
+
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).appendRow(pDataArray); 
 
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
   const lLastRow = oSheet.getRange(sRange).getNextDataCell(SpreadsheetApp.Direction.DOWN).getLastRow();
   const oData    = oSheet.getRange(sRange + lLastRow).getValues();
-  
+  sIngreCol = cIngreCol + lLastRow;
+  if (sURL !== undefined && sURL !== null && sURL !== "") {
+    setIngredientURL(lSheet, sIngreCol, sIngre, sURL);
+  }
+
   let oResult = [];
   for ( i=1 ; i<oData.length ; i++ ) {
+    sIngreCol = cIngreCol + (i+1);
+    sURL = getIngredientURL(lSheet, sIngreCol);
+    if (sURL === undefined || sURL === null) {
+      sURL = "";
+    }
     oResult.push({ 
                    "Store"      : oData[i][0],
                    "Ingredient" : oData[i][1],
                    "Recipe"     : oData[i][2],
                    "UID"        : oData[i][3],
+                   "URL"        : sURL,
                    "dirtyRow"   : -1,
                    "rowNo"      : i + 1
                 });
@@ -217,6 +239,9 @@ function appendGroceryToSheet(pSheet, pDataArray) {
 function retrieveGrocery(pSheet) {
   const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
                         Session.getActiveUser().getEmail();
+  const cIngreCol = "B";
+  let sIngreCol;
+  let sURL = null;
   const sRange = "A1";
   const lSheet = pSheet || "Grocery";
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
@@ -230,6 +255,11 @@ function retrieveGrocery(pSheet) {
       break;
     }
  
+    sIngreCol = cIngreCol + (i+1);
+    sURL = getIngredientURL(lSheet, sIngreCol);
+    if (sURL === undefined || sURL === null) {
+      sURL = "";
+    }
     if ( lVerifiedUser === "" ||
          lVerifiedUser === undefined ||
          lVerifiedUser === null ) {
@@ -243,6 +273,7 @@ function retrieveGrocery(pSheet) {
                         "Ingredient" : oData[i][1],
                         "Recipe"     : oData[i][2],
                         "UID"        : oData[i][3],
+                        "URL"        : sURL,
                         "dirtyRow"   : -1,
                         "rowNo"      : i + 1
                       });
@@ -259,6 +290,7 @@ function retrieveGrocery(pSheet) {
                         "Ingredient" : oData[i][1],
                         "Recipe"     : oData[i][2],
                         "UID"        : oData[i][3],
+                        "URL"        : sURL,
                         "dirtyRow"   : -1,
                         "rowNo"      : i + 1
                       });
@@ -282,6 +314,9 @@ function retrieveGroceryHistory(pSheet) {
   const lVerifiedUser = PropertiesService.getScriptProperties().getProperty('gVerifiedUser') || 
                         Session.getActiveUser().getEmail();
   const listLimit = 20;
+  const cIngreCol = "B";
+  let sIngreCol;
+  let sURL = null;
   const sRange = "A1";
   const lSheet = pSheet || "Grocery History";
   const oSheet   = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet);
@@ -299,6 +334,11 @@ function retrieveGroceryHistory(pSheet) {
       break;
     }
 
+    sIngreCol = cIngreCol + (i+1);
+    sURL = getIngredientURL(lSheet, sIngreCol);
+    if (sURL === undefined || sURL === null) {
+      sURL = "";
+    }
     if ( lVerifiedUser === "" ||
          lVerifiedUser === undefined ||
          lVerifiedUser === null ) {
@@ -312,6 +352,7 @@ function retrieveGroceryHistory(pSheet) {
                         "Ingredient" : oData[i][1],
                         "Recipe"     : oData[i][2],
                         "UID"        : oData[i][3],
+                        "URL"        : sURL,
                         "ChangedOn"  : oData[i][7],
                         "rowNo"      : i + 1
                       });
@@ -328,6 +369,7 @@ function retrieveGroceryHistory(pSheet) {
                         "Ingredient" : oData[i][1],
                         "Recipe"     : oData[i][2],
                         "UID"        : oData[i][3],
+                        "URL"        : sURL,
                         "ChangedOn"  : oData[i][7],
                         "rowNo"      : i + 1
                       });            
@@ -424,4 +466,26 @@ function checkIfStoreIngredientExist(pSheet, pStore, pIngredient) {
     lResult = true;
   }
   return lResult;
+}
+
+
+// https://gist.github.com/tanaikech/d39b4b5ccc5a1d50f5b8b75febd807a6
+function getIngredientURL(pSheet, pIngreRange) {
+  const lSheet = pSheet || 'Ingredient Database';
+  const lIngreRange = pIngreRange || 'B33';
+  let sURL = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange(lIngreRange).getRichTextValue().getLinkUrl();
+  return sURL;
+}
+
+
+function setIngredientURL(pSheet, pIngreRange, pIngre, pIngreURL) {
+  const lSheet = pSheet || 'Store';
+  const lRange = pIngreRange || 'F10';
+  const lIngre = pIngre || "testIngre";
+  const lIngreURL = pIngreURL || 'https://www.google.com';
+  const oRichText = SpreadsheetApp.newRichTextValue()
+      .setText(lIngre)
+      .setLinkUrl(lIngreURL)
+      .build();
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(lSheet).getRange(lRange).setRichTextValue(oRichText);
 }

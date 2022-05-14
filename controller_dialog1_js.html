@@ -1,0 +1,18 @@
+<script>
+  // Controller dialog definition
+  sap.ui.define([
+    'jquery.sap.global',
+    'sap/ui/core/mvc/Controller',
+    'sap/ui/model/json/JSONModel'
+  ], function(jQuery, Controller, JSONModel) {
+    "use strict";
+
+    return Controller.extend("controller.Dialog1", {
+      // Dialog logic
+      onInit: function(oEvent) {
+        const oImage = this.getView().byId("imageURL");
+        oImage.setModel(sap.ui.getCore().getModel("imageURL"));
+      }
+    });
+  });  
+</script>

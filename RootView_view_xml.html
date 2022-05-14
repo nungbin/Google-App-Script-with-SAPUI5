@@ -60,7 +60,7 @@
                         id="iDtblGroceryList"
                         inset="false"
                         selectionChange=".onSelectedGrocery"
-                        mode="SingleSelectLeft"
+                        mode="None"
                         items="{
                           path: '/GroceryList',
                           sorter: {
@@ -69,6 +69,9 @@
                       }"
                   >
                       <columns>
+                          <Column width="20%">
+                              <Text text="" />
+                          </Column>
                           <Column id="column1" width="100%">
                               <Text text="Store" />
                           </Column>
@@ -98,9 +101,14 @@
                                           detailPress=".onGroceryItemEdit" 
                           >
                               <cells>
+                                  <CheckBox text="Check Box" selected="false" select=".onSelectGrocery"
+                                  />
                                   <Text text="{Store}"      id="iDTXTStore"/>
-                                  <Text text="{Ingredient}" 
-                                          id="iDTXTIngre" 
+                                  <Link text="{Ingredient}" 
+                                        emphasized="true"
+                                        enabled="{= ${URL} === '' ? false : true }"
+                                        press=".onPressIngreURL"
+                                        id="iDTXTIngre" 
                                   />
                                   <!-- controls within <HBox/> count as one column -->
                                   <Input
@@ -194,7 +202,11 @@
                           <ColumnListItem type="Active" id="item3">
                               <cells>
                                   <Text text="{PGL>Store}"      id="text5"/>
-                                  <Text text="{PGL>Ingredient}" id="text6"/>
+                                  <Link text="{PGL>Ingredient}" 
+                                        emphasized="true"
+                                        enabled="{= ${PGL>URL} === '' ? false : true }"
+                                        id="text6" 
+                                  />
                                   <Text text="{PGL>Recipe}"     id="text7"/>
                                   <Text text="{PGL>ChangedOn}"  id="text8" class="smallLabel"/>
                               </cells>

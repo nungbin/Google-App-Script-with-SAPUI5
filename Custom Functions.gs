@@ -45,3 +45,4 @@ function testTimeZone() {
   const lDate = new Date().toLocaleString("en-US", {timeZone: "America/Edmonton"});
   Logger.log(lDate);
 }
+

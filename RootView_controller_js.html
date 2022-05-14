@@ -100,8 +100,14 @@
 
           let t   = [];
           for (var i = 0; i < res.length; i++){
+              let tempURL = res[i].url;
+              if ( res[i].url === undefined || res[i].url === null ) {
+                tempURL = "";
+              }
+
               t.push({ "key" : i,
-                       "text": res[i]
+                       "text": res[i].ingre,
+                       "url" : tempURL
                     });
           }
           oView.getModel().setProperty("/DDIngre", t);
@@ -112,6 +118,7 @@
       onBtnAdd: function(oEvent) {
         const oView = this.getView();
         const that = this;
+        const tURL = "";
         var   enteredingredient = oView.byId("idDDIngre").getValue();
         const keyStore  = oView.byId("idDDStore").getSelectedKey(),
               storeText = oView.byId("idDDStore").getSelectedItem().getText(),
@@ -158,28 +165,33 @@
                     }
                     console.log(t);
                     t.push({ "key" : t.length + 1,
-                             "text": enteredingredient
+                             "text": enteredingredient,
+                             "url" : tURL
                           });
                     oView.getModel().setProperty("/DDIngre", t);
                   }
                   oGlobalBusyDialog.close();
-                  that._CheckGroceryAndAdd(oEvent, enteredingredient);
+                  that._CheckGroceryAndAdd(oEvent, enteredingredient, tURL);
                 })
               } else {
-                that._CheckGroceryAndAdd(oEvent, enteredingredient);
+                that._CheckGroceryAndAdd(oEvent, enteredingredient, tURL);
               }
             }
           });
         }
         else {
+          const sKey   = oView.byId("idDDIngre").getSelectedKey();
+          const sArray = oView.getModel().getProperty("/DDIngre");
+          const sURL   = sArray[sKey].url;
           that._CheckGroceryAndAdd(oEvent,
-                                   oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text
+                                   oView.byId("idDDIngre").getSelectedItem().getBindingContext().getObject().text,
+                                   sURL
                                   );
         }
       },
 
 
-      _CheckGroceryAndAdd: function(oEvent, pIngre) {
+      _CheckGroceryAndAdd: function(oEvent, pIngre, pURL) {
         const oView = this.getView();
         const that = this;
         const sStore = oView.byId("idDDStore").getSelectedItem().getBindingContext().getObject().text;
@@ -197,19 +209,19 @@
               title: "Confirm",
               onClose: function(btn) {
                 if (btn === "OK") {
-                  that._addGroceryToDatabase(sStore, sIngre);
+                  that._addGroceryToDatabase(sStore, sIngre, pURL);
                 }         
               }
             });
           }
           else {
-            that._addGroceryToDatabase(sStore, sIngre);
+            that._addGroceryToDatabase(sStore, sIngre, pURL);
           }
         })
       },
 
 
-      _addGroceryToDatabase: function(pStore, pIngre) {
+      _addGroceryToDatabase: function(pStore, pIngre, pURL) {
         const oView = this.getView();
 
         oView.getModel().setProperty("/TopFlexBoxBusy", true);        
@@ -217,8 +229,9 @@
         arrayGrocery.push(pStore);
         arrayGrocery.push(pIngre);
         arrayGrocery.push("");
+        arrayGrocery.push(pURL);
         appendGroceryToSheet("Grocery", arrayGrocery).then((res) => {
-          const t = oView.getModel().getProperty("/GroceryList");
+          //const t = oView.getModel().getProperty("/GroceryList");
           oView.getModel().setProperty("/GroceryList", res);
           oView.byId("idDDIngre").clearSelection();
           oView.byId("iDtblGroceryList").removeSelections(true);
@@ -281,6 +294,11 @@
         this.onPress(oEvent.getSource(), bVisible);
       },
 
+
+      onSelectGrocery: function(oEvent) {
+        alert("onSelectGrocery clicked!!!");
+      },
+
       onSelectedGrocery: function(oEvent) {
           // learned from https://plnkr.co/edit/mNxnG4CnxmzjkCGKkDEw?p=preview&preview
           const oSelectedItem = oEvent.getParameter("listItem");
@@ -309,9 +327,8 @@
           })
       },
 
-
       onRecipeChange: function(oEvent) {
-        const iUIDPosition=5;
+        const iUIDPosition=6;
         const iDirtyRowIndex = this.getView().byId("iDtblGroceryList").indexOfItem(oEvent.getSource().getParent());
         const sUID = oEvent.getSource().getParent().getCells()[iUIDPosition].getText();
 
@@ -411,6 +428,45 @@
             oGlobalBusyDialog.close();
         })
         }
+      },
+
+
+      onPressIngreURL: function(oEvent) {
+        const iUIDPosition=6;
+        const iDirtyRowIndex = this.getView().byId("iDtblGroceryList").indexOfItem(oEvent.getSource().getParent());
+        const sUID = oEvent.getSource().getParent().getCells()[iUIDPosition].getText();
+
+        // Keep track of the row which has a change in it!!!
+        let oData = this.getView().getModel().getProperty("/GroceryList");
+        const iRowIndex = oData.findIndex(element => element.UID === sUID);
+        let oJSONData = {
+          imageURL: oData[iRowIndex].URL
+        };
+        let oJSONModel = new sap.ui.model.json.JSONModel(oJSONData);
+        sap.ui.getCore().setModel(oJSONModel, "imageURL");
+
+        var dialog = new sap.m.Dialog({
+            title: 'Ingredient',
+            draggable: true,
+            resizable: true,
+            //stretch: true,
+            content: sap.ui.xmlview({
+                viewContent: jQuery('#dialog1URL').html()
+            }),
+            beginButton: new sap.m.Button({
+                text: 'Close',
+                press: function () {
+                    dialog.close();
+                }
+            }),
+            afterClose: function() {
+                dialog.destroy();
+            }
+        });
+
+        //to get access to the global model
+        this.getView().addDependent(dialog);
+        dialog.open();
       },
 
 
