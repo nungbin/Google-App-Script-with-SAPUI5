@@ -5,6 +5,5 @@ Google Chrome Extension [Google Apps Script GitHub Assistant](https://chrome.goo
 <br/>
 Currently, this method only supports one XML View.<br/>
 <br/>
-XML View can be edited using [SAP BTS](https://1260e3b8trial.us10cf.trial.applicationstudio.cloud.sap/index.html). <br/>
-<br/>
-A sample [XML View file](https://drive.google.com/file/d/1PNAcp3zDFtTN8i33b5LjtfIR2GcfmOu0/view?usp=sharing). 
+
+Sample [Google sheet](https://docs.google.com/spreadsheets/d/1qqbANHcQc8iorVNuw9fWFon9wmKBwnNM9ujnOsMnvwk/edit?usp=sharing) <br/>
