@@ -163,7 +163,7 @@
                     if ( t.length === 0 ) {
                       t = [];
                     }
-                    console.log(t);
+
                     t.push({ "key" : t.length + 1,
                              "text": enteredingredient,
                              "url" : tURL
@@ -349,7 +349,7 @@
         const iRecipeControlIndex = 3;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
-          if ( oData[i].dirtyRow != -1 ) {
+          if ( oData[i].dirtyRow !== -1 ) {
             const sString = 
               this.getView().byId("iDtblGroceryList").getItems()[oData[i].dirtyRow].getCells()[iRecipeControlIndex].getValue();            
             dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
@@ -380,7 +380,7 @@
         const iRecipeControlIndex = 3;
         const oData  = this.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
-          if ( oData[i].dirtyRow != -1 ) {
+          if ( oData[i].dirtyRow !== -1 ) {
             const sString = 
               this.getView().byId("iDtblGroceryList").getItems()[oData[i].dirtyRow].getCells()[iRecipeControlIndex].getValue();
             dirtyRowArray.push({ "rowNo" : oData[i].rowNo,
@@ -420,7 +420,7 @@
         let oData = that.getView().getModel().getProperty("/GroceryList");
         for (let i=0 ; i<oData.length ; i++) {
           that.onPress(that.getView().byId("iDtblGroceryList").getItems()[i], false);
-          oData[i].dirtyRow = false;
+          oData[i].dirtyRow = -1;
         }
         that.getView().getModel().setProperty("/GroceryList", oData);
 

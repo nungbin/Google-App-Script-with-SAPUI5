@@ -69,7 +69,7 @@
                       }"
                   >
                       <columns>
-                          <Column width="20%">
+                          <Column width="25%">
                               <Text text="" />
                           </Column>
                           <Column id="column1" width="100%">
@@ -89,10 +89,9 @@
                               </header>
                           </Column>
 
-                          <Column width="20%"></Column>
-                          <Column width="20%"></Column>
+                          <Column width="25%"></Column>
+                          <Column width="25%"></Column>
                           <Column visible="false"></Column>                          
-
                       </columns>
                       <items>
                           <ColumnListItem type="Detail" 
@@ -101,7 +100,8 @@
                                           detailPress=".onGroceryItemEdit" 
                           >
                               <cells>
-                                  <CheckBox text="Check Box" selected="false" select=".onSelectedGrocery"
+                                  <CheckBox selected="false"
+                                            select=".onSelectedGrocery"
                                   />
                                   <Text text="{Store}"      id="iDTXTStore"/>
                                   <Link text="{Ingredient}" 
